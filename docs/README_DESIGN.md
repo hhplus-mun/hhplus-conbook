@@ -40,14 +40,13 @@ config/
 <br>
 
 ### ERD 설계
-
-<img src="https://github.com/user-attachments/assets/12de2fb4-cf44-4f32-a1a1-bd2fe4ea3c93" width="700">
+<img src="https://github.com/user-attachments/assets/43bcfa39-d13a-485b-af30-8900c6762e57" width="700">
 
 - 사용자(users): 이름과 고유 식별값인 UUID를 갖는다.
 - 포인트(user_point): 일대일 연관관계를 맺는 사용자 ID와 결제시 사용하는 사용자의 point를 갖는다.
 - 공연(concert): 속성 정보인 공연자, 장소, 타이틀을 갖는다.
 - 공연 일정(concert_schedule): 다대일 관계를 맺는 공연의 ID, 공연일정(concert_date), 판매 수(sold_count), 공연의 가능 좌석 수를 갖는다.
-- 좌석(seat): 다대일 관계를 맺는 공연 일정의 ID와 위치정보(rowName, seatNo)를 갖는다.
+- 좌석(seat): 다대일 관계를 맺는 공연 일정의 ID, 위치정보(rowName, seatNo), 점유정보(is_occupied)를 갖는다.
 - 예약(booking): 다대일 연관관계를 갖는 사용자와 좌석의 ID, 예약상태 (status), 예약일시와 예약 수정일시를 갖는다.
 - 토큰 대기열(token_queue): 사용자가 서비스를 이용할 때 필요한 토큰을 생성하기 위해 사용하는 대기열 테이블이다.
     - 콘서트 ID, 사용자 ID, 대기열 순위(position), 대기열 상태, 대기열 생성 / 만료 일시 정보를 담는다.
