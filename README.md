@@ -39,5 +39,5 @@
 
 **Refer to**
 - [시나리오 요구사항 분석](./docs/README_ANALYSIS.md)
-
+- [프로젝트 설계](./docs/README_DESIGN.md)
 <br>
