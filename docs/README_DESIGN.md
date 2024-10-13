@@ -16,23 +16,24 @@
   querydsl (설정 예정)
   
 - DB
-  H2 
+  H2, MariaDB
 ```
 <br>
 
 - 패키지 구조 <br>
 ```text
-application/
-  ㄴ 도메인/
-domain/
-  ㄴ 도메인/
-infra/
-  ㄴ db/
-    ㄴ 도메인/
-interfaces/
-  ㄴ api/
-    ㄴ 도메인/
-config/
+io.hhplus.conbook/
+├─ application/
+│  └─ 도메인/
+├─ domain/
+│  └─ 도메인/
+├─ infra/
+│  └─ db/
+│     └─ 도메인/
+├─ interfaces/
+│  └─ api/
+│     └─ 도메인/
+└─ config/
 ```
 계층 구조(Layered Architecture)를 기반으로 구현하지만, 비즈니스로직을 보호하기 위해 Repository를 추상화하여 사용한다. <br>
 비즈니스 로직이 DB와 실제 상호작용하는 부분을 모르게 처리함으로서 application이 수행해야할 기능에 집중하도록 한다.
@@ -160,7 +161,7 @@ config/
 
 #### 예약 가능 좌석 API
 <details>
- <summary><code>GET</code> <code><b>/v1/concerts/{id}/dates/{date}/available-seats</b></code> <code>(예약 가능한 좌석 목록)</code></summary>
+ <summary><code>GET</code> <code><b>/v1/concerts/{id}/available-seats?date={date}</b></code> <code>(예약 가능한 좌석 목록)</code></summary>
 
 ##### Headers
 | Key           | value                                                                                                                                                               |
@@ -187,7 +188,7 @@ config/
   curl -X GET \
        -H "Content-Type: application/json" \
        -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-       http://localhost:8080/v1/concerts/1/dates/20241011/available-seats
+       http://localhost:8080/v1/concerts/1/available-seats?date=20241011
 ```
 
 </details>
@@ -195,7 +196,7 @@ config/
 
 #### 좌석 예약 요청 API
 <details>
- <summary><code>POST</code> <code><b>/v1/concerts/{id}/dates/{date}/booking</b></code> <code>(좌석 예약 요청)</code></summary>
+ <summary><code>POST</code> <code><b>/v1/concerts/{id}/booking</b></code> <code>(좌석 예약 요청)</code></summary>
 
 ##### Headers
 | Key           | value                                                                                                                                                               |
@@ -223,7 +224,7 @@ config/
   curl -X POST \
        -H "Content-Type: application/json" \
        -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-       -d '1' \
+       -d '{"date": "20241011", "seatId": 1}' \
        http://localhost:8080/v1/concerts/1/dates/20241011/booking
 ```
 
