@@ -13,6 +13,7 @@ public class ConcertController {
 
     /**
      * TODO: 콘서트 예약가능 날짜 API
+     * @param id concertId
      */
     @GetMapping("/{id}/available-dates")
     public ConcertResponse.AvailableDates availableDates(
@@ -27,11 +28,13 @@ public class ConcertController {
 
     /**
      * TODO: 콘서트 예약가능 좌석 API
+     * @param id concertId
+     * @param date yyyyMMdd
      */
-    @GetMapping("/{id}/dates/{date}/available-seats")
+    @GetMapping("/{id}/available-seats")
     public ConcertResponse.AvailableSeats availableSeats(
             @PathVariable Long id,
-            @PathVariable String date
+            @RequestParam String date
     ) {
         return new ConcertResponse.AvailableSeats(
                 1L,
@@ -44,11 +47,10 @@ public class ConcertController {
     /**
      * TODO: 좌석 예약 요청 API
      */
-    @PostMapping("/{id}/dates/{date}/booking")
+    @PostMapping("/{id}/booking")
     public ConcertResponse.Booking bookSeat(
             @PathVariable Long id,
-            @PathVariable String date,
-            @RequestBody Long seatId
+            @RequestBody ConcertRequest.Booking bookingRequest
     ) {
         return new ConcertResponse.Booking(
                 1L,
