@@ -19,11 +19,11 @@ public class CustomTokenClaims implements CustomClaims {
     private LocalDateTime expiredAt;
 
     /**
-     * TokenType - ACCESS
+     * 기본 발급 토큰 유형은 Access 토큰이다.
      *
      * @param concertId
      * @param userUUID
-     * @return
+     * @return AccessToken
      */
     public static CustomTokenClaims getDefaultClaims(long concertId, String userUUID) {
         return new CustomTokenClaims(concertId, userUUID);
