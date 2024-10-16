@@ -7,7 +7,7 @@ public enum TokenType {
 
     public ItemStatus toItemStatus() {
         if (this.equals(ACCESS)) {
-            return ItemStatus.SUCCESS;
+            return ItemStatus.PASSED;
         } else {
             return ItemStatus.WAITING;
         }

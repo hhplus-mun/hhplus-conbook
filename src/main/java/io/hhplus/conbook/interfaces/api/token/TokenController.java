@@ -1,31 +1,47 @@
 package io.hhplus.conbook.interfaces.api.token;
 
+import io.hhplus.conbook.application.token.TokenCommand;
+import io.hhplus.conbook.application.token.TokenFacade;
+import io.hhplus.conbook.application.token.TokenResult;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/token")
+@RequiredArgsConstructor
+@Slf4j
 public class TokenController {
 
+    private final TokenFacade tokenFacade;
+
     /**
-     * TODO: 유저 토큰 발급 API
-     * @param userId > 0
-     * @return
+     * 유저 토큰 발급 API
      */
     @PostMapping("/generation")
     public TokenResponse.Generate generate(
-            @RequestBody Long userId
+            @RequestBody TokenRequest.Generate req
     ) {
-        String prefix = "Bearer ";
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        TokenResult.Access token = tokenFacade.getAccessToken(new TokenCommand.Access(req.userId(), req.concertId()));
 
-        return new TokenResponse.Generate(prefix + token);
+        return new TokenResponse.Generate(token.jwt(), token.type());
     }
 
     /**
-     * TODO: 대기번호 조회
+     * 대기번호 조회
+     * 사용자 대기열 통과 시 액세스 토큰을 발급
+     *
+     * @param token - custom HTTP Header 대기열 토큰을 Header에 넣어야 한다.
+     * @return 대기번호 or 액세스 토큰
      */
     @GetMapping("/check")
-    public TokenResponse.Position position() {
-        return new TokenResponse.Position(1);
+    public TokenResponse.Status positionOrAccess(
+            @RequestHeader(name = "WaitingToken") String token
+    ) {
+        log.info("\nwaitingToken: {}", token);
+
+        TokenResult.Check checkResult = tokenFacade.checkStatus(new TokenCommand.Check(token));
+
+        return new TokenResponse.Status(checkResult.tokenStatusInfo());
     }
 }
