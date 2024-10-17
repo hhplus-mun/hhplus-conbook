@@ -14,6 +14,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+        e.printStackTrace();
         return ResponseEntity.status(500).body(new ErrorResponse("500", e.getMessage()));
     }
 }
