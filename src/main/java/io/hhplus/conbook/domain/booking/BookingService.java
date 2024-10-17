@@ -1,5 +1,6 @@
 package io.hhplus.conbook.domain.booking;
 
+import io.hhplus.conbook.domain.concert.ConcertSchedule;
 import io.hhplus.conbook.domain.concert.Seat;
 import io.hhplus.conbook.domain.concert.SeatRepository;
 import io.hhplus.conbook.domain.user.User;
@@ -34,9 +35,11 @@ public class BookingService {
      * @return
      */
     @Transactional
-    public Booking createBooking(long seatId, User user) {
+    public Booking createBooking(ConcertSchedule schedule, long seatId, User user) {
         Seat seat = seatRepository.findSeatWithPessimisticLock(seatId);
         if (seat.isOccupied()) throw new AlreadyOccupiedException();
+
+        seat.addSchedule(schedule);
 
         Booking saved = bookingRepository.save(new Booking(seat, user, BookingStatus.RESERVED));
 

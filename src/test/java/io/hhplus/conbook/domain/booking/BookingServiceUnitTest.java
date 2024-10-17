@@ -45,7 +45,7 @@ class BookingServiceUnitTest {
                 .willReturn(booking);
 
         // when
-        Booking result = bookingService.createBooking(seatId, user);
+        Booking result = bookingService.createBooking(null, seatId, user);
 
         // then
         assertThat(result.getId()).isEqualTo(1L);

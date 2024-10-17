@@ -59,7 +59,8 @@ public class ConcertFacade {
         User user = userService.getUserByUUID(booking.userUUID());
 
         // scheduleId, seat 정보,
-        Booking bookingResult = bookingService.createBooking(booking.seatId(), user);
+        ConcertSchedule concertSchedule = concertService.getConcertSchedule(booking.concertId(), booking.date());
+        Booking bookingResult = bookingService.createBooking(concertSchedule, booking.seatId(), user);
         bookingService.addSchedule(bookingResult);
 
         concertService.updateSeatStatus(booking.concertId(), booking.date());
