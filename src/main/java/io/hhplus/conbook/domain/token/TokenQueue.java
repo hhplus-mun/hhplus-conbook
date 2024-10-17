@@ -19,4 +19,10 @@ public class TokenQueue {
         this.concert = concert;
         this.accessCapacity = accessCapacity;
     }
+
+    public TokenQueue(Long id, Concert concert, int accessCapacity) {
+        this.id = id;
+        this.concert = concert;
+        this.accessCapacity = accessCapacity;
+    }
 }
