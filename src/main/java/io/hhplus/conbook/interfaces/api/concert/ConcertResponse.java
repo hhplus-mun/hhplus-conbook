@@ -1,6 +1,5 @@
 package io.hhplus.conbook.interfaces.api.concert;
 
-import io.hhplus.conbook.domain.booking.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -24,10 +23,10 @@ public class ConcertResponse {
 
     public record Booking (
             long bookingId,
-            long concertId,
-            LocalDate date,
-            long seatId,
-            BookingStatus status,
+            String userName,
+            String rowName,
+            int seatNo,
+            LocalDateTime bookingDateTime,
             LocalDateTime expirationTime
     ) {}
 

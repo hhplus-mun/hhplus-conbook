@@ -1,64 +1,92 @@
 package io.hhplus.conbook.interfaces.api.concert;
 
-import io.hhplus.conbook.domain.booking.BookingStatus;
+import io.hhplus.conbook.application.concert.ConcertCommand;
+import io.hhplus.conbook.application.concert.ConcertFacade;
+import io.hhplus.conbook.application.concert.ConcertResult;
+import io.hhplus.conbook.config.CustomAttribute;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.List;
+
+import static io.hhplus.conbook.application.concert.ConcertValidator.validate;
 
 @RestController
 @RequestMapping("/v1/concerts")
+@RequiredArgsConstructor
 public class ConcertController {
 
+    private final ConcertFacade concertFacade;
+
     /**
-     * TODO: 콘서트 예약가능 날짜 API
+     * 콘서트 예약가능 날짜 API
+     *
      * @param id concertId
      */
     @GetMapping("/{id}/available-dates")
     public ConcertResponse.AvailableDates availableDates(
-            @PathVariable Long id
+            @PathVariable Long id,
+            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
     ) {
+        validate(id, concertId);
+
+        List<ConcertResult.Search> searchResults = concertFacade.availableDates(new ConcertCommand.Search(id));
+
         return new ConcertResponse.AvailableDates(
-                1L,
-                "Cold Play",
-                Arrays.asList(new ConcertResponse.ConcertDetails(LocalDate.now(), 50))
+                searchResults.get(0).concertId(),
+                searchResults.get(0).title(),
+                searchResults.stream()
+                        .map(r -> new ConcertResponse.ConcertDetails(r.date(), r.capacity()))
+                        .toList()
         );
     }
 
     /**
-     * TODO: 콘서트 예약가능 좌석 API
+     * 콘서트 예약가능 좌석 API
+     *
      * @param id concertId
-     * @param date yyyyMMdd
+     * @param date yyyyMMdd (queryString)
      */
     @GetMapping("/{id}/available-seats")
     public ConcertResponse.AvailableSeats availableSeats(
             @PathVariable Long id,
-            @RequestParam String date
+            @RequestParam String date,
+            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
     ) {
+        validate(id, concertId);
+
+        ConcertResult.Status seatStatus = concertFacade.availableSeats(new ConcertCommand.Status(id, date));
+
         return new ConcertResponse.AvailableSeats(
-                1L,
-                "Cold Play",
-                LocalDate.now(),
-                Arrays.asList(new ConcertResponse.SeatDto(1L, "A", 1))
+                seatStatus.concertId(),
+                seatStatus.concertTitle(),
+                seatStatus.date(),
+                seatStatus.seatInfo().stream()
+                        .map(s -> new ConcertResponse.SeatDto(s.getId(), s.getRowName(), s.getSeatNo()))
+                        .toList()
         );
     }
 
     /**
-     * TODO: 좌석 예약 요청 API
+     * 좌석 예약 요청 API
      */
     @PostMapping("/{id}/booking")
     public ConcertResponse.Booking bookSeat(
-            @PathVariable Long id,
-            @RequestBody ConcertRequest.Booking bookingRequest
+            @PathVariable long id,
+            @RequestBody ConcertRequest.Booking req,
+            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId,
+            @RequestAttribute(name = CustomAttribute.USER_UUID) String userUUID
     ) {
+        validate(id, concertId);
+        ConcertResult.BookingDto result = concertFacade.bookConcertSeat(new ConcertCommand.Booking(userUUID, req.seatId()));
+
         return new ConcertResponse.Booking(
-                1L,
-                1L,
-                LocalDate.now(),
-                1L,
-                BookingStatus.RESERVED,
-                LocalDateTime.now().plusMinutes(5)
+                result.bookingId(),
+                result.userName(),
+                result.rowName(),
+                result.seatNo(),
+                result.bookingDateTime(),
+                result.expirationTime()
         );
     }
 }
