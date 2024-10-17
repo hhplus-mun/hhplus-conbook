@@ -70,8 +70,12 @@ public class TokenManager {
             throw new NotValidTokenException(String.format("JWT validation fail - [TokenType]: %s", TokenType.ACCESS));
 
         AccessPayload payload = tokenProvider.extractAccess(token);
-
         return queueItemRepository.existsInPass(payload.concertId(), payload.uuid());
+    }
+
+    public AccessTokenInfo parseAccessTokenInfo(String token) {
+        AccessPayload payload = tokenProvider.extractAccess(token);
+        return new AccessTokenInfo(payload.concertId(), payload.uuid());
     }
 
     public TokenStatusInfo getWaitingStatusInfo(String waitingToken) {
