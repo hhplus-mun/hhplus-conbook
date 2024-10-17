@@ -20,4 +20,8 @@ public class Seat {
     public void hasCancelled() {
         isOccupied = false;
     }
+
+    public void addSchedule(ConcertSchedule schedule) {
+        concertSchedule = schedule;
+    }
 }
