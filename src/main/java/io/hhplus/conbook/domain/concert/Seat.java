@@ -11,8 +11,13 @@ public class Seat {
     private boolean isOccupied;
     private String rowName;
     private int seatNo;
+    private int price;
 
     public void hasReserved() {
         isOccupied = true;
+    }
+
+    public void hasCancelled() {
+        isOccupied = false;
     }
 }

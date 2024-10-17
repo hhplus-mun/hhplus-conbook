@@ -15,6 +15,7 @@ public class Booking {
     private Long id;
     private Seat seat;
     private User user;
+    private int bookingPrice;
     private BookingStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -23,6 +24,7 @@ public class Booking {
     public Booking(Seat seat, User user, BookingStatus status) {
         this.seat = seat;
         this.user = user;
+        this.bookingPrice = seat.getPrice();
         this.status = status;
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();

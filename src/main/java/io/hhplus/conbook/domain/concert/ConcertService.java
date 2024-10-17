@@ -38,4 +38,12 @@ public class ConcertService {
         LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
         return localDate;
     }
+
+    public void updateSeatStatus(long concertId, String date) {
+        LocalDate localDate = convertToLocalDate(date);
+        ConcertSchedule schedule = scheduleRepository.findScheduleBy(concertId, localDate);
+        schedule.audienceIncrease();
+
+        scheduleRepository.updateSchedule(schedule);
+    }
 }

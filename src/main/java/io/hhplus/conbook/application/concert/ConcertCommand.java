@@ -11,6 +11,8 @@ public class ConcertCommand {
     ) {}
 
     public record Booking(
+            long concertId,
+            String date,
             String userUUID,
             long seatId
     ){}
