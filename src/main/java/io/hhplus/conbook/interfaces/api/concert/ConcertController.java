@@ -14,7 +14,7 @@ import static io.hhplus.conbook.application.concert.ConcertValidator.validate;
 @RestController
 @RequestMapping("/v1/concerts")
 @RequiredArgsConstructor
-public class ConcertController {
+public class ConcertController implements ConcertControllerApi {
 
     private final ConcertFacade concertFacade;
 
@@ -23,6 +23,7 @@ public class ConcertController {
      *
      * @param id concertId
      */
+    @Override
     @GetMapping("/{id}/available-dates")
     public ConcertResponse.AvailableDates availableDates(
             @PathVariable Long id,
@@ -47,6 +48,7 @@ public class ConcertController {
      * @param id concertId
      * @param date yyyyMMdd (queryString)
      */
+    @Override
     @GetMapping("/{id}/available-seats")
     public ConcertResponse.AvailableSeats availableSeats(
             @PathVariable Long id,
@@ -70,6 +72,7 @@ public class ConcertController {
     /**
      * 좌석 예약 요청 API
      */
+    @Override
     @PostMapping("/{id}/booking")
     public ConcertResponse.Booking bookSeat(
             @PathVariable long id,
@@ -78,7 +81,7 @@ public class ConcertController {
             @RequestAttribute(name = CustomAttribute.USER_UUID) String userUUID
     ) {
         validate(id, concertId);
-        ConcertResult.BookingDto result = concertFacade.bookConcertSeat(new ConcertCommand.Booking(userUUID, req.seatId()));
+        ConcertResult.BookingDto result = concertFacade.bookConcertSeat(new ConcertCommand.Booking(id, req.date(), userUUID, req.seatId()));
 
         return new ConcertResponse.Booking(
                 result.bookingId(),

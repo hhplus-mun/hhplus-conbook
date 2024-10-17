@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/token")
 @RequiredArgsConstructor
 @Slf4j
-public class TokenController {
+public class TokenController implements TokenControllerApi {
 
     private final TokenFacade tokenFacade;
 
     /**
      * 유저 토큰 발급 API
      */
+    @Override
     @PostMapping("/generation")
     public TokenResponse.Generate generate(
             @RequestBody TokenRequest.Generate req
@@ -34,6 +35,7 @@ public class TokenController {
      * @param token - custom HTTP Header 대기열 토큰을 Header에 넣어야 한다.
      * @return 대기번호 or 액세스 토큰
      */
+    @Override
     @GetMapping("/check")
     public TokenResponse.Status positionOrAccess(
             @RequestHeader(name = "WaitingToken") String token
