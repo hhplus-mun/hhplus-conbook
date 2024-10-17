@@ -1,14 +1,20 @@
 spring:
   application:
     name: conbook
+  datasource:
+    url: jdbc:mariadb://localhost:3306/conbook
+    username: margin
+    password: jwmun5508
+    driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     open-in-view: false
-    hibernate:
-      ddl-auto: create
+#    hibernate:
+#      ddl-auto: create
     properties:
       hibernate:
         show_sql: true
         format_sql: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
 springdoc:
   swagger-ui:
     tags-sorter: alpha
