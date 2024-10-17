@@ -18,8 +18,11 @@ public class ConcertService {
         return concertRepository.getConcertBy(id);
     }
 
-    public List<ConcertSchedule> getConcertScheduleList(long concertId) {
-        return concertRepository.findScheduleListBy(concertId);
+    public List<ConcertSchedule> getAvailableConcertScheduleList(long concertId) {
+        return concertRepository.findScheduleListBy(concertId)
+                .stream()
+                .filter(s -> s.getCapacity() > s.getOccupiedCount())
+                .toList();
     }
 
     public List<Seat> getConcertSeatList(long concertId, String date) {

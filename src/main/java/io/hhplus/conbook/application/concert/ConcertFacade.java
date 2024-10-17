@@ -21,7 +21,7 @@ public class ConcertFacade {
 
     public List<ConcertResult.Search> availableDates(ConcertCommand.Search search) {
 
-        return concertService.getConcertScheduleList(search.concertId())
+        return concertService.getAvailableConcertScheduleList(search.concertId())
                 .stream()
                 .filter(s -> s.getCapacity() > s.getOccupiedCount())
                 .map(s -> new ConcertResult.Search(
