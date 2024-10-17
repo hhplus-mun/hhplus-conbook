@@ -4,12 +4,16 @@ import io.hhplus.conbook.domain.concert.Concert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @Getter
 public class TokenQueue {
     private Long id;
     private Concert concert;
     private int accessCapacity;
+    private List<TokenQueueItem> queueItems = new ArrayList<>();
 
     public TokenQueue(Concert concert, int accessCapacity) {
         this.concert = concert;

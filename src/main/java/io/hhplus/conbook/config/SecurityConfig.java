@@ -25,11 +25,13 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .formLogin(formLogin -> formLogin.disable())
 
+                .securityMatcher("/v1/**")
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request -> request
-                        .anyRequest().authenticated()
+                        .requestMatchers("/v1/**").authenticated()
+                        .requestMatchers("/v1/token/**").permitAll()
                 )
                 .addFilterBefore(new TokenAuthenticationFilter(tokenManager), UsernamePasswordAuthenticationFilter.class)
                 .build();

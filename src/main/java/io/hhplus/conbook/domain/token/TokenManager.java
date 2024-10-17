@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -83,7 +84,7 @@ public class TokenManager {
             throw new NotValidTokenException(String.format("JWT validation fail - [TokenType]: %s", TokenType.WAIT));
 
         WaitPayload waitPayload = tokenProvider.extractWait(waitingToken);
-        TokenQueueItem item = queueItemRepository.getItemBy(waitPayload.concertId(), waitPayload.uuid());
+        TokenQueueItem item = queueItemRepository.findItemBy(waitPayload.concertId(), waitPayload.uuid());
 
         TokenStatusInfo tokenInfo;
         if (item.getStatus().equals(ItemStatus.PASSED)) {
@@ -94,5 +95,36 @@ public class TokenManager {
         }
 
         return tokenInfo;
+    }
+
+    public List<TokenQueue> getTokenQueueListWithItems() {
+        return queueRepository.getQueueListWithItems();
+    }
+
+    // TODO: for-loop를 활용해서 token을 delete하지만 bulk delete를 활용할 수 있도록 추후 리팩토링
+    public void removeExpiredAccessToken(List<TokenQueueItem> expiredTokens) {
+        for (TokenQueueItem tokenItem : expiredTokens) {
+            queueItemRepository.remove(tokenItem);
+        }
+    }
+
+    // TODO: for-loop를 활용해서 token 상태를 update하지만 bulk update를 활용할 수 있도록 추후 리팩토링
+    public void convertToPass(List<TokenQueueItem> waitingItems, int count) {
+        waitingItems.sort(Comparator.comparing(TokenQueueItem::getPosition));
+
+        for(int i=0; i<count; i++) {
+            TokenQueueItem token = waitingItems.remove(0);
+            token.switchStatusToPass();
+
+            queueItemRepository.updateStatus(token);
+        }
+
+        if(waitingItems.size() > 0) {
+            int position = 1;
+            for (TokenQueueItem waitingItem : waitingItems) {
+                waitingItem.changePosition(position++);
+                queueItemRepository.updateStatus(waitingItem);
+            }
+        }
     }
 }

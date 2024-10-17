@@ -1,5 +1,6 @@
 package io.hhplus.conbook.domain.token;
 
+import io.hhplus.conbook.domain.token.generation.CustomClaims;
 import io.hhplus.conbook.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,15 @@ public class TokenQueueItem {
         this.position = position;
         this.createdAt = createdAt;
         this.expiredAt = expiredAt;
+    }
+
+    public void switchStatusToPass() {
+        status = ItemStatus.PASSED;
+        expiredAt = LocalDateTime.now().plusMinutes(CustomClaims.EXPIRATION_MIN);
+        position = -1;
+    }
+
+    public void changePosition(int position) {
+        this.position = position;
     }
 }

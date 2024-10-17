@@ -23,12 +23,12 @@ public class ConcertFacade {
 
         return concertService.getConcertScheduleList(search.concertId())
                 .stream()
-                .filter(s -> s.getCapacity() > s.getSoldCount())
+                .filter(s -> s.getCapacity() > s.getOccupiedCount())
                 .map(s -> new ConcertResult.Search(
                         search.concertId(),
                         s.getConcert().getTitle(),
                         s.getConcertDate(),
-                        s.getSoldCount(),
+                        s.getOccupiedCount(),
                         s.getCapacity())
                 )
                 .toList();
@@ -60,6 +60,9 @@ public class ConcertFacade {
 
         // scheduleId, seat 정보,
         Booking bookingResult = bookingService.createBooking(booking.seatId(), user);
+        bookingService.addSchedule(bookingResult);
+
+        concertService.updateSeatStatus(booking.concertId(), booking.date());
 
         return new ConcertResult.BookingDto(
                 bookingResult.getId(),

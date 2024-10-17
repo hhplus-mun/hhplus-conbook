@@ -30,7 +30,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         log.info("token: {}, url: {}", authorizationHeader, requestURI);
 
         if (!StringUtils.hasText(authorizationHeader))
-            throw new NotAllowedAccessException();
+            throw new NotAllowedAccessException(String.format("requestURI: {}", requestURI));
 
         String token = extractJwt(authorizationHeader);
         if (tokenManager.verifyToken(token)) {
