@@ -12,6 +12,6 @@ public class PointResponse {
     public record Point (
             long userId,
             long point,
-            LocalDateTime updateTime
+            LocalDateTime lastUpdatedTime
     ) {}
 }
