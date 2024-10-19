@@ -18,7 +18,7 @@ public class ConcertResponse {
             long concertId,
             String concertName,
             LocalDate date,
-            List<SeatDto> seats
+            List<SeatDetails> seats
     ) {}
 
     public record Booking (
@@ -39,7 +39,7 @@ public class ConcertResponse {
 
     @AllArgsConstructor
     @Getter
-    public static class SeatDto {
+    public static class SeatDetails {
         private long id;
         private String rowName;
         private int seatNo;

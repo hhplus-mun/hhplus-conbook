@@ -24,12 +24,13 @@ public class ConcertFacade {
         return concertService.getAvailableConcertScheduleList(search.concertId())
                 .stream()
                 .filter(s -> s.getCapacity() > s.getOccupiedCount())
-                .map(s -> new ConcertResult.Search(
-                        search.concertId(),
-                        s.getConcert().getTitle(),
-                        s.getConcertDate(),
-                        s.getOccupiedCount(),
-                        s.getCapacity())
+                .map(s -> new ConcertResult.Search().builder()
+                                .concertId(search.concertId())
+                                .title(s.getConcert().getTitle())
+                                .date(s.getConcertDate())
+                                .soldCount(s.getOccupiedCount())
+                                .capacity(s.getCapacity())
+                                .build()
                 )
                 .toList();
     }
@@ -44,9 +45,12 @@ public class ConcertFacade {
                 schedule.getConcert().getTitle(),
                 schedule.getConcertDate(),
                 seatList.stream()
-                        .map(s -> new ConcertResult.SeatInfo(
-                                s.getId(), s.getRowName(), s.getSeatNo()
-                        )).toList()
+                        .map(s -> ConcertResult.SeatInfo.builder()
+                                .id(s.getId())
+                                .rowName(s.getRowName())
+                                .seatNo(s.getSeatNo())
+                                .build())
+                        .toList()
         );
     }
 
@@ -55,7 +59,7 @@ public class ConcertFacade {
      * - 좌석을 미리 안 만들 경우 어떤 식으로 처리할 지는 추후 여유가 있을 때 구현
      *  (좌석의 좌표값(x,y)만 제공될 경우)
      */
-    public ConcertResult.BookingDto bookConcertSeat(ConcertCommand.Booking booking) {
+    public ConcertResult.BookingSeat bookConcertSeat(ConcertCommand.Booking booking) {
         User user = userService.getUserByUUID(booking.userUUID());
 
         // scheduleId, seat 정보,
@@ -65,13 +69,13 @@ public class ConcertFacade {
 
         concertService.updateSeatStatus(booking.concertId(), booking.date());
 
-        return new ConcertResult.BookingDto(
-                bookingResult.getId(),
-                user.getName(),
-                bookingResult.getSeat().getRowName(),
-                bookingResult.getSeat().getSeatNo(),
-                bookingResult.getCreatedAt(),
-                bookingResult.getExpiredAt()
-        );
+        return ConcertResult.BookingSeat.builder()
+                .bookingId(bookingResult.getId())
+                .userName(user.getName())
+                .rowName(bookingResult.getSeat().getRowName())
+                .seatNo(bookingResult.getSeat().getSeatNo())
+                .bookingDateTime(bookingResult.getCreatedAt())
+                .expirationTime(bookingResult.getExpiredAt())
+                .build();
     }
 }

@@ -1,13 +1,13 @@
 package io.hhplus.conbook.application.concert;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class ConcertResult {
+    @Builder
     public record Search(
             long concertId,
             String title,
@@ -23,15 +23,15 @@ public class ConcertResult {
             List<SeatInfo> seatInfo
     ) {}
 
-    @AllArgsConstructor
-    @Getter
-    public static class SeatInfo {
-        private long id;
-        private String rowName;
-        private int seatNo;
-    }
+    @Builder
+    public record SeatInfo (
+            long id,
+            String rowName,
+            int seatNo
+    ) {}
 
-    public record BookingDto (
+    @Builder
+    public record BookingSeat(
             long bookingId,
             String userName,
             String rowName,
