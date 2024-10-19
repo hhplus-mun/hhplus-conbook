@@ -29,9 +29,9 @@ class ConcertFacadeTest {
         User userByUUID = userService.getUserByUUID(uuid);
 
         // when
-        ConcertResult.BookingDto bookingDto = concertFacade.bookConcertSeat(new ConcertCommand.Booking(concertId, date, uuid, seatId));
+        ConcertResult.BookingSeat booking = concertFacade.bookConcertSeat(new ConcertCommand.Booking(concertId, date, uuid, seatId));
 
         // then
-        assertThat(bookingDto.userName()).isEqualTo(userByUUID.getName());
+        assertThat(booking.userName()).isEqualTo(userByUUID.getName());
     }
 }

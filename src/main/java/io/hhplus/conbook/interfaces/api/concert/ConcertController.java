@@ -64,7 +64,7 @@ public class ConcertController implements ConcertControllerApi {
                 seatStatus.concertTitle(),
                 seatStatus.date(),
                 seatStatus.seatInfo().stream()
-                        .map(s -> new ConcertResponse.SeatDto(s.getId(), s.getRowName(), s.getSeatNo()))
+                        .map(s -> new ConcertResponse.SeatDetails(s.id(), s.rowName(), s.seatNo()))
                         .toList()
         );
     }
@@ -81,7 +81,7 @@ public class ConcertController implements ConcertControllerApi {
             @RequestAttribute(name = CustomAttribute.USER_UUID) String userUUID
     ) {
         validate(id, concertId);
-        ConcertResult.BookingDto result = concertFacade.bookConcertSeat(new ConcertCommand.Booking(id, req.date(), userUUID, req.seatId()));
+        ConcertResult.BookingSeat result = concertFacade.bookConcertSeat(new ConcertCommand.Booking(id, req.date(), userUUID, req.seatId()));
 
         return new ConcertResponse.Booking(
                 result.bookingId(),
