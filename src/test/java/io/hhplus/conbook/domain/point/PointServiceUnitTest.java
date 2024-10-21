@@ -1,11 +1,9 @@
 package io.hhplus.conbook.domain.point;
 
 import io.hhplus.conbook.domain.user.User;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -14,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +36,7 @@ class PointServiceUnitTest {
                 .willReturn(userPoint);
 
         //when & then
-        assertThatThrownBy(() -> pointService.chargePoint(james, 100, dateTime))
+        assertThatThrownBy(() -> pointService.chargePoint(userId, 100, dateTime))
                 .isInstanceOf(DuplicateRequestException.class);
     }
 }

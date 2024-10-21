@@ -30,4 +30,12 @@ public class Booking {
         updatedAt = LocalDateTime.now();
         expiredAt = createdAt.plusMinutes(BOOKING_EXPIRATION_MIN);
     }
+
+    public void hasCancelled() {
+        status = BookingStatus.CANCELLED;
+    }
+
+    public void hasPaid() {
+        status = BookingStatus.PAID;
+    }
 }

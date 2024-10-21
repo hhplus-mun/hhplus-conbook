@@ -127,4 +127,11 @@ public class TokenManager {
             }
         }
     }
+
+    public void expireAccessRight(long concertId, String userUUID) {
+        TokenQueueItem tokenItem = queueItemRepository.findItemBy(concertId, userUUID);
+        tokenItem.expire();
+
+        queueItemRepository.saveOrUpdate(tokenItem);
+    }
 }

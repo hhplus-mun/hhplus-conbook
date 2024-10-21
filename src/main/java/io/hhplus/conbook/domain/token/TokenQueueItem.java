@@ -38,4 +38,8 @@ public class TokenQueueItem {
     public void changePosition(int position) {
         this.position = position;
     }
+
+    public void expire() {
+        this.expiredAt = LocalDateTime.now();
+    }
 }
