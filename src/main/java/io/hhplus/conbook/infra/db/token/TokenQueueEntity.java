@@ -1,6 +1,5 @@
 package io.hhplus.conbook.infra.db.token;
 
-import io.hhplus.conbook.domain.concert.Concert;
 import io.hhplus.conbook.domain.token.TokenQueue;
 import io.hhplus.conbook.infra.db.concert.ConcertEntity;
 import jakarta.persistence.*;
@@ -35,7 +34,6 @@ public class TokenQueueEntity {
     public TokenQueueEntity(TokenQueue tokenQueue) {
         this.id = tokenQueue.getId();
         this.accessCapacity = tokenQueue.getAccessCapacity();
-        Concert con = tokenQueue.getConcert();
-        this.concert = new ConcertEntity(con.getId(), con.getTitle(), con.getArtist(), con.getPlace());
+        this.concert = new ConcertEntity(tokenQueue.getConcert());
     }
 }

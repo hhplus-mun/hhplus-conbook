@@ -19,7 +19,7 @@ public class ConcertService {
     }
 
     public List<ConcertSchedule> getAvailableConcertScheduleList(long concertId) {
-        return concertRepository.findScheduleListBy(concertId)
+        return scheduleRepository.findScheduleListBy(concertId)
                 .stream()
                 .filter(s -> s.getCapacity() > s.getOccupiedCount())
                 .toList();
@@ -47,6 +47,6 @@ public class ConcertService {
         ConcertSchedule schedule = scheduleRepository.findScheduleBy(concertId, localDate);
         schedule.audienceIncrease();
 
-        scheduleRepository.updateSchedule(schedule);
+        scheduleRepository.saveOrUpdate(schedule);
     }
 }

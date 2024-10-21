@@ -24,6 +24,10 @@ class ConcertServiceUnitTest {
 
     @Mock
     ConcertRepository concertRepository;
+    @Mock
+    ConcertScheduleRepository scheduleRepository;
+    @Mock
+    SeatRepository seatRepository;
 
     @Test
     @DisplayName("[정상]: 이용가능한 좌석만 filter처리해서 뿌려주는지 확인")
@@ -38,9 +42,8 @@ class ConcertServiceUnitTest {
                 new ConcertSchedule(1L, null, LocalDate.now(), 6, 5),
                 new ConcertSchedule(1L, null, LocalDate.now(), 7, 5)
         );
-        BDDMockito.given(concertRepository.findScheduleListBy(1L))
+        BDDMockito.given(scheduleRepository.findScheduleListBy(1L))
                 .willReturn(schedules);
-
 
         // when
         List<ConcertSchedule> availableList = concertService.getAvailableConcertScheduleList(1L);
