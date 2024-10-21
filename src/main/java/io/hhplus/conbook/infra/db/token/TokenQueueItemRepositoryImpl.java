@@ -57,4 +57,9 @@ public class TokenQueueItemRepositoryImpl implements TokenQueueItemRepository {
     public void remove(TokenQueueItem item) {
         tokenQueueItemJpaRepository.delete(new TokenQueueItemEntity(item));
     }
+
+    @Override
+    public void saveOrUpdate(TokenQueueItem tokenQueueItem) {
+        tokenQueueItemJpaRepository.save(new TokenQueueItemEntity(tokenQueueItem));
+    }
 }

@@ -12,5 +12,5 @@ public interface TokenQueueItemRepository {
 
     void remove(TokenQueueItem tokenItem);
 
-    void saveOrUpdate(TokenQueueItem tokenItem);
+    void saveOrUpdate(TokenQueueItem tokenQueueItem);
 }
