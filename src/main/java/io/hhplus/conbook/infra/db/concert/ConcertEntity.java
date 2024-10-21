@@ -20,10 +20,10 @@ public class ConcertEntity {
         return new Concert(id, title, artist, place);
     }
 
-    public ConcertEntity(Long id, String title, String artist, String place) {
-        this.id = id;
-        this.title = title;
-        this.artist = artist;
-        this.place = place;
+    public ConcertEntity(Concert concert) {
+        this.id = concert.getId();
+        this.title = concert.getTitle();
+        this.artist = concert.getArtist();
+        this.place = concert.getPlace();
     }
 }
