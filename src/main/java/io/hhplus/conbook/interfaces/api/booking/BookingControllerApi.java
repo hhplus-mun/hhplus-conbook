@@ -19,6 +19,7 @@ public interface BookingControllerApi {
     @PostMapping("/{id}/payments")
     BookingResponse.Payments payments(
             @PathVariable long id,
-            @RequestAttribute(name = CustomAttribute.USER_UUID) String uuid
+            @RequestAttribute(name = CustomAttribute.USER_UUID) String uuid,
+            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
     );
 }

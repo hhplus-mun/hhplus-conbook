@@ -1,6 +1,5 @@
 package io.hhplus.conbook.domain.point;
 
-import io.hhplus.conbook.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +13,9 @@ public class PointService {
     private final UserPointRepository userPointRepository;
 
     @Transactional
-    public UserPoint chargePoint(User user, long amount, LocalDateTime reqTime) {
+    public UserPoint chargePoint(long userId, long amount, LocalDateTime reqTime) {
         // start Lock
-        UserPoint userPoint = userPointRepository.findPointWithPessimisticLock(user.getId());
+        UserPoint userPoint = userPointRepository.findPointWithPessimisticLock(userId);
         if (userPoint.getUpdatedTime().equals(reqTime)) throw new DuplicateRequestException();
 
         long totalPoint = userPoint.getPoint() + amount;
@@ -30,4 +29,16 @@ public class PointService {
     }
 
 
+    @Transactional
+    public UserPoint spendPoint(Long userId, long amount, LocalDateTime reqTime) {
+        // start Lock
+        UserPoint userPoint = userPointRepository.findPointWithPessimisticLock(userId);
+        if (userPoint.getUpdatedTime().equals(reqTime)) throw new DuplicateRequestException();
+
+        long totalPoint = userPoint.getPoint() - amount;
+        if (totalPoint < 0) throw new IllegalArgumentException("잔고가 부족합니다.");
+        userPoint.updatePointWith(totalPoint, reqTime);
+
+        return userPointRepository.update(userPoint);
+    }
 }

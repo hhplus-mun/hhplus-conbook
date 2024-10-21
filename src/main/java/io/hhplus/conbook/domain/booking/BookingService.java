@@ -60,13 +60,23 @@ public class BookingService {
             if (!found.getStatus().equals(BookingStatus.PAID)) {
                 Seat seat = booking.getSeat();
                 seat.hasCancelled();
-
                 seatRepository.updateStatus(seat);
+
+                found.hasCancelled();
+                bookingRepository.save(found);
             }
         };
         Instant startTime =
                 LocalDateTime.now().plusMinutes(DEFAULT_BOOKING_STAGING_MIN).atZone(ZoneId.systemDefault()).toInstant();
 
         taskScheduler.schedule(task,startTime);
+    }
+
+    public Booking completePayment(long bookingId) {
+        Booking booking = bookingRepository.findBy(bookingId);
+        if (!booking.getStatus().equals(BookingStatus.RESERVED)) throw new IllegalArgumentException();
+
+        booking.hasPaid();
+        return bookingRepository.save(booking);
     }
 }
