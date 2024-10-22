@@ -21,7 +21,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         HttpStatus statusCode = HttpStatus.UNAUTHORIZED;
         log.error(statusCode.getReasonPhrase(), e);
 
-        ErrorCode errorCode = ErrorCode.parse(e.getMessage());
+        ErrorCode errorCode = ErrorCode.resolve(e.getMessage());
         return ResponseEntity.status(statusCode)
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getDesc()));
     }
@@ -31,7 +31,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         HttpStatus statusCode = HttpStatus.CONFLICT;
         log.error(statusCode.getReasonPhrase(), e);
 
-        ErrorCode errorCode = ErrorCode.parse(e.getMessage());
+        ErrorCode errorCode = ErrorCode.resolve(e.getMessage());
         return ResponseEntity.status(statusCode)
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getDesc()));
     }
@@ -41,7 +41,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         HttpStatus statusCode = HttpStatus.CONFLICT;
         log.error(statusCode.getReasonPhrase(), e);
 
-        ErrorCode errorCode = ErrorCode.parse(e.getMessage());
+        ErrorCode errorCode = ErrorCode.resolve(e.getMessage());
         return ResponseEntity.status(statusCode)
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getDesc()));
     }
@@ -51,7 +51,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         HttpStatus statusCode = HttpStatus.FORBIDDEN;
         log.error(statusCode.getReasonPhrase(), e);
 
-        ErrorCode errorCode = ErrorCode.parse(e.getMessage());
+        ErrorCode errorCode = ErrorCode.resolve(e.getMessage());
         return ResponseEntity.status(statusCode)
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getDesc()));
     }
@@ -61,7 +61,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         log.error(statusCode.getReasonPhrase(), e);
 
-        ErrorCode errorCode = ErrorCode.parse(e.getMessage());
+        ErrorCode errorCode = ErrorCode.resolve(e.getMessage());
         return ResponseEntity.status(statusCode)
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getDesc()));
     }
@@ -71,7 +71,7 @@ public class ApiControllerAdvice extends ResponseEntityExceptionHandler {
         HttpStatus statusCode = HttpStatus.NOT_FOUND;
         log.error(statusCode.getReasonPhrase(), e);
 
-        ErrorCode errorCode = ErrorCode.parse(e.getMessage());
+        ErrorCode errorCode = ErrorCode.resolve(e.getMessage());
         return ResponseEntity.status(statusCode)
                 .body(new ErrorResponse(errorCode.getCode(), errorCode.getDesc()));
     }

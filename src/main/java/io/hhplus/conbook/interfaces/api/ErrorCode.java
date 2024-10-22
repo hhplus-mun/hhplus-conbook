@@ -3,6 +3,8 @@ package io.hhplus.conbook.interfaces.api;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
@@ -47,11 +49,11 @@ public enum ErrorCode {
     private String code;
     private String desc;
 
-    public static ErrorCode parse(String errorMessage) {
-        try {
-            return ErrorCode.valueOf(errorMessage);
-        } catch (Exception e) {
-            return INTERNAL_SERVER_ERROR;
+    public static ErrorCode resolve(String errorMessage) {
+        for (ErrorCode errorCode : values()) {
+            if(errorCode.code.equals(errorMessage)) return errorCode;
         }
+
+        return INTERNAL_SERVER_ERROR;
     }
 }
