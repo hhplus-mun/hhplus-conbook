@@ -1,4 +1,4 @@
-package io.hhplus.conbook.config;
+package io.hhplus.conbook.interfaces.filter;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

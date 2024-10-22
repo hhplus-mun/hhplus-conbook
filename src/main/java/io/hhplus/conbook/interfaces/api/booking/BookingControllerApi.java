@@ -1,6 +1,6 @@
 package io.hhplus.conbook.interfaces.api.booking;
 
-import io.hhplus.conbook.config.CustomAttribute;
+import io.hhplus.conbook.interfaces.filter.CustomAttribute;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

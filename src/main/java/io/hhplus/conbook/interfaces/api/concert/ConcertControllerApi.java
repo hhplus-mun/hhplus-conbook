@@ -1,6 +1,6 @@
 package io.hhplus.conbook.interfaces.api.concert;
 
-import io.hhplus.conbook.config.CustomAttribute;
+import io.hhplus.conbook.interfaces.filter.CustomAttribute;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
