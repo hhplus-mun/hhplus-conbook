@@ -3,12 +3,13 @@ package io.hhplus.conbook.interfaces.api.token;
 import io.hhplus.conbook.application.token.TokenCommand;
 import io.hhplus.conbook.application.token.TokenFacade;
 import io.hhplus.conbook.application.token.TokenResult;
+import io.hhplus.conbook.interfaces.api.ApiRoutes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/v1/token")
+@RequestMapping(ApiRoutes.BASE_TOKEN_API_PATH)
 @RequiredArgsConstructor
 @Slf4j
 public class TokenController implements TokenControllerApi {

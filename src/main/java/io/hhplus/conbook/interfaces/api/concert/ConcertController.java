@@ -3,7 +3,8 @@ package io.hhplus.conbook.interfaces.api.concert;
 import io.hhplus.conbook.application.concert.ConcertCommand;
 import io.hhplus.conbook.application.concert.ConcertFacade;
 import io.hhplus.conbook.application.concert.ConcertResult;
-import io.hhplus.conbook.config.CustomAttribute;
+import io.hhplus.conbook.interfaces.api.ApiRoutes;
+import io.hhplus.conbook.interfaces.filter.CustomAttribute;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import static io.hhplus.conbook.application.concert.ConcertValidator.validate;
 
 @RestController
-@RequestMapping("/v1/concerts")
+@RequestMapping(ApiRoutes.BASE_CONCERT_API_PATH)
 @RequiredArgsConstructor
 public class ConcertController implements ConcertControllerApi {
 
