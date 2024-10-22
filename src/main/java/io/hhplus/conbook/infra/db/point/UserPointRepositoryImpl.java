@@ -4,6 +4,7 @@ import io.hhplus.conbook.domain.point.UserPoint;
 import io.hhplus.conbook.domain.point.UserPointRepository;
 import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.infra.db.user.UserEntity;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,7 @@ public class UserPointRepositoryImpl implements UserPointRepository {
     public UserPoint findPointWithPessimisticLock(Long userId) {
 
         return userPointJpaRepository.findByWithPessimisticLock(userId)
-                .orElseThrow(() -> new IllegalArgumentException())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POINT_INFO_NOT_FOUND.getCode()))
                 .toDomain();
     }
 
@@ -34,7 +35,7 @@ public class UserPointRepositoryImpl implements UserPointRepository {
     @Override
     public UserPoint getUserPoint(long userId) {
         return userPointJpaRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POINT_INFO_NOT_FOUND.getCode()))
                 .toDomain();
     }
 }

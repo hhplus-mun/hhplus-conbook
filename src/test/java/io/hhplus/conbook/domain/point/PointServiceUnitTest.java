@@ -37,6 +37,6 @@ class PointServiceUnitTest {
 
         //when & then
         assertThatThrownBy(() -> pointService.chargePoint(userId, 100, dateTime))
-                .isInstanceOf(DuplicateRequestException.class);
+                .isInstanceOf(NotValidRequestException.class);
     }
 }

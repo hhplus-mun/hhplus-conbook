@@ -2,12 +2,14 @@ package io.hhplus.conbook.config;
 
 import io.hhplus.conbook.domain.token.AccessTokenInfo;
 import io.hhplus.conbook.domain.token.TokenManager;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,7 +32,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         log.info("token: {}, url: {}", authorizationHeader, requestURI);
 
         if (!StringUtils.hasText(authorizationHeader))
-            throw new NotAllowedAccessException(String.format("requestURI: {}", requestURI));
+            throw new AccessDeniedException(ErrorCode.UNAUTHORIZED_ACCESS.getCode());
 
         String token = extractJwt(authorizationHeader);
         if (tokenManager.verifyToken(token)) {

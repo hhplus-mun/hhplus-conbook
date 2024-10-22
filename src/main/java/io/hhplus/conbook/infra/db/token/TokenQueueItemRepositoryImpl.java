@@ -3,6 +3,7 @@ package io.hhplus.conbook.infra.db.token;
 import io.hhplus.conbook.domain.token.ItemStatus;
 import io.hhplus.conbook.domain.token.TokenQueueItem;
 import io.hhplus.conbook.domain.token.TokenQueueItemRepository;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +19,7 @@ public class TokenQueueItemRepositoryImpl implements TokenQueueItemRepository {
     @Override
     public List<TokenQueueItem> itemList(long concertId) {
         TokenQueueEntity tokenQueue = tokenQueueJpaRepository.findByConcertId(concertId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.QUEUE_NOT_FOUND.getCode()));
 
         return tokenQueueItemJpaRepository.findAllByTokenQueueId(tokenQueue.getId())
                 .stream()
@@ -35,7 +36,7 @@ public class TokenQueueItemRepositoryImpl implements TokenQueueItemRepository {
     public TokenQueueItem findItemBy(long concertId, String userUUID) {
 
         return tokenQueueItemJpaRepository.findItemByConcertIdAndUUID(concertId, userUUID)
-                .orElseThrow(() -> new IllegalArgumentException())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()))
                 .toDomain();
     }
 
@@ -43,7 +44,7 @@ public class TokenQueueItemRepositoryImpl implements TokenQueueItemRepository {
     public boolean existsInPass(long concertId, String userUUID) {
         TokenQueueItemEntity item =
                 tokenQueueItemJpaRepository.findItemByConcertIdAndUUID(concertId, userUUID)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()));
 
         return item.getStatus().equals(ItemStatus.PASSED) ? true : false;
     }
