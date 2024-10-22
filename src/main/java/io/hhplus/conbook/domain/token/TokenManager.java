@@ -3,6 +3,7 @@ package io.hhplus.conbook.domain.token;
 import io.hhplus.conbook.domain.concert.Concert;
 import io.hhplus.conbook.domain.token.generation.*;
 import io.hhplus.conbook.domain.user.User;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -68,7 +69,7 @@ public class TokenManager {
      */
     public boolean verifyToken(String token) {
         if (!tokenProvider.validate(token))
-            throw new NotValidTokenException(String.format("JWT validation fail - [TokenType]: %s", TokenType.ACCESS));
+            throw new NotValidTokenException(ErrorCode.ACCESS_TOKEN_VALIDATION_FAILED.getCode());
 
         AccessPayload payload = tokenProvider.extractAccess(token);
         return queueItemRepository.existsInPass(payload.concertId(), payload.uuid());
@@ -81,7 +82,7 @@ public class TokenManager {
 
     public TokenStatusInfo getWaitingStatusInfo(String waitingToken) {
         if (!tokenProvider.validate(waitingToken))
-            throw new NotValidTokenException(String.format("JWT validation fail - [TokenType]: %s", TokenType.WAIT));
+            throw new NotValidTokenException(ErrorCode.WAITING_TOKEN_VALIDATION_FAILED.getCode());
 
         WaitPayload waitPayload = tokenProvider.extractWait(waitingToken);
         TokenQueueItem item = queueItemRepository.findItemBy(waitPayload.concertId(), waitPayload.uuid());

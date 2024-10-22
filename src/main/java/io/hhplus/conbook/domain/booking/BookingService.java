@@ -4,6 +4,7 @@ import io.hhplus.conbook.domain.concert.ConcertSchedule;
 import io.hhplus.conbook.domain.concert.Seat;
 import io.hhplus.conbook.domain.concert.SeatRepository;
 import io.hhplus.conbook.domain.user.User;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
@@ -37,7 +38,7 @@ public class BookingService {
     @Transactional
     public Booking createBooking(ConcertSchedule schedule, long seatId, User user) {
         Seat seat = seatRepository.findSeatWithPessimisticLock(seatId);
-        if (seat.isOccupied()) throw new AlreadyOccupiedException();
+        if (seat.isOccupied()) throw new AlreadyOccupiedException(ErrorCode.NOT_AVAILABLE_SEAT.getCode());
 
         seat.addSchedule(schedule);
 
@@ -74,7 +75,7 @@ public class BookingService {
 
     public Booking completePayment(long bookingId) {
         Booking booking = bookingRepository.findBy(bookingId);
-        if (!booking.getStatus().equals(BookingStatus.RESERVED)) throw new IllegalArgumentException();
+        if (!booking.getStatus().equals(BookingStatus.RESERVED)) throw new IllegalStateException(ErrorCode.INVALID_BOOKING_STATUS.getCode());
 
         booking.hasPaid();
         return bookingRepository.save(booking);

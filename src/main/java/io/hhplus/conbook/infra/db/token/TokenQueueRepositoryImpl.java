@@ -2,6 +2,7 @@ package io.hhplus.conbook.infra.db.token;
 
 import io.hhplus.conbook.domain.token.TokenQueue;
 import io.hhplus.conbook.domain.token.TokenQueueRepository;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,12 +15,13 @@ public class TokenQueueRepositoryImpl implements TokenQueueRepository {
 
     @Override
     public void addQueue(TokenQueue tokenQueue) {
+        tokenQueueJpaRepository.save(new TokenQueueEntity(tokenQueue));
     }
 
     @Override
     public TokenQueue getTokenQueue(long concertId) {
         return tokenQueueJpaRepository.findByConcertId(concertId)
-                .orElseThrow(() -> new IllegalArgumentException())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.QUEUE_NOT_FOUND.getCode()))
                 .toDomainWithoutItems();
     }
 

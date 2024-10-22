@@ -2,6 +2,7 @@ package io.hhplus.conbook.infra.db.concert;
 
 import io.hhplus.conbook.domain.concert.ConcertSchedule;
 import io.hhplus.conbook.domain.concert.ConcertScheduleRepository;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +26,7 @@ public class ConcertScheduleRepositoryImpl implements ConcertScheduleRepository 
     @Override
     public ConcertSchedule findScheduleBy(long concertId, LocalDate date) {
         return concertScheduleJpaRepository.findByConcertIdAndAndConcertDate(concertId, date)
-                .orElseThrow(() -> new IllegalArgumentException())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.CONCERT_SCHEDULE_NOT_FOUND.getCode()))
                 .toDomain();
     }
 

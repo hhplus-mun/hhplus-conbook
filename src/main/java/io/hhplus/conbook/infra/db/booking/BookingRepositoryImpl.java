@@ -2,6 +2,7 @@ package io.hhplus.conbook.infra.db.booking;
 
 import io.hhplus.conbook.domain.booking.Booking;
 import io.hhplus.conbook.domain.booking.BookingRepository;
+import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ public class BookingRepositoryImpl implements BookingRepository {
     @Override
     public Booking findBy(Long id) {
         return bookingJpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException())
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.BOOKING_NOT_FOUND.getCode()))
                 .toDomain();
     }
 }
