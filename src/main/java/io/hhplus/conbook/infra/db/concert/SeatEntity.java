@@ -28,16 +28,20 @@ public class SeatEntity {
     private int seatNo;
     private int price;
 
+    public SeatEntity(Seat seat) {
+        this.id = seat.getId();
+        this.concertSchedule = new ConcertScheduleEntity(seat.getConcertSchedule());
+        this.isOccupied = seat.isOccupied();
+        this.rowName = seat.getRowName();
+        this.seatNo = seat.getSeatNo();
+        this.price = seat.getPrice();
+    }
+
     public Seat toDomain() {
         return new Seat(id, concertSchedule.toDomain(), isOccupied, rowName, seatNo, price);
     }
 
-    public SeatEntity(Seat seat) {
-        this.id = id;
-        this.concertSchedule = concertSchedule;
-        this.isOccupied = isOccupied;
-        this.rowName = rowName;
-        this.seatNo = seatNo;
-        this.price = price;
+    public Seat toDomainWithoutSchedule() {
+        return new Seat(id, null, isOccupied, rowName, seatNo, price);
     }
 }

@@ -25,7 +25,7 @@ public class SeatRepositoryImpl implements SeatRepository {
     public Seat findSeatWithPessimisticLock(long seatId) {
         return seatJpaRepository.findByWithPessimisticLock(seatId)
                 .orElseThrow(() -> new IllegalArgumentException())
-                .toDomain();
+                .toDomainWithoutSchedule();
     }
 
     @Override

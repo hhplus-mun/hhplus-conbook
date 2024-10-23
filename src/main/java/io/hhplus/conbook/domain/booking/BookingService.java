@@ -18,6 +18,7 @@ import java.time.ZoneId;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class BookingService {
     /**
      * 예약시 결제 이전까지 점유할 수 있는 시간 - 5분
@@ -73,6 +74,7 @@ public class BookingService {
         taskScheduler.schedule(task,startTime);
     }
 
+    @Transactional
     public Booking completePayment(long bookingId) {
         Booking booking = bookingRepository.findBy(bookingId);
         if (!booking.getStatus().equals(BookingStatus.RESERVED)) throw new IllegalStateException(ErrorCode.INVALID_BOOKING_STATUS.getCode());

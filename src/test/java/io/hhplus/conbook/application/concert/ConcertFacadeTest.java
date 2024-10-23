@@ -23,7 +23,7 @@ class ConcertFacadeTest {
         // given
         // sql 디렉토리에 아래 내용 정부 저장되어있음
         long concertId = 1;
-        String date = "20241002";
+        String date = "20241001";
         String uuid = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
         long seatId = 1L;
         User userByUUID = userService.getUserByUUID(uuid);
