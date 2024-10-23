@@ -2,6 +2,7 @@ package io.hhplus.conbook.config;
 
 import io.hhplus.conbook.domain.token.TokenManager;
 import io.hhplus.conbook.interfaces.api.ApiRoutes;
+import io.hhplus.conbook.interfaces.filter.TokenAuthenticationEntryPointHandler;
 import io.hhplus.conbook.interfaces.filter.TokenAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final TokenManager tokenManager;
+    private final TokenAuthenticationEntryPointHandler tokenAuthenticationEntryPointHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,6 +36,9 @@ public class SecurityConfig {
                         .requestMatchers(ApiRoutes.API_V1 + "/**").authenticated()
                 )
                 .addFilterBefore(new TokenAuthenticationFilter(tokenManager), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(tokenAuthenticationEntryPointHandler)
+                )
                 .build();
     }
 }

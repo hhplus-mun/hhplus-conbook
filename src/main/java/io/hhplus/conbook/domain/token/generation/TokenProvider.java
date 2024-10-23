@@ -70,7 +70,7 @@ public class TokenProvider {
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("jwt parsing exception: ", e);
             return false;
         }
     }
