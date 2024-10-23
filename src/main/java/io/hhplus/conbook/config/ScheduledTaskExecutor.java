@@ -25,7 +25,7 @@ public class ScheduledTaskExecutor {
      * scheduler interval time : 5min
      * > 5 * 60 * 1000 = 300,000
      */
-    private static final long TOKEN_CHECKER_INTERVAL = 300000L;
+    public static final long TOKEN_CHECKER_INTERVAL = 300000L;
 
     /**
      * 대기열 토큰 상태 업데이트
