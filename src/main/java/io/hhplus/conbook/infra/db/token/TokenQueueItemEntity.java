@@ -29,7 +29,7 @@ public class TokenQueueItemEntity {
     @Enumerated(EnumType.STRING)
     private ItemStatus status;
 
-    private int position;
+    private Integer position;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

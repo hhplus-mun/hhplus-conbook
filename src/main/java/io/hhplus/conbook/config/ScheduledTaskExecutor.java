@@ -36,8 +36,8 @@ public class ScheduledTaskExecutor {
             Map<ItemStatus, List<TokenQueueItem>> tokenGroup = queue.getQueueItems().stream()
                     .collect(Collectors.groupingBy(TokenQueueItem::getStatus));
 
-            List<TokenQueueItem> waitingItems = tokenGroup.get(ItemStatus.WAITING);
-            List<TokenQueueItem> passedItems = tokenGroup.get(ItemStatus.PASSED);
+            List<TokenQueueItem> waitingItems = tokenGroup.getOrDefault(ItemStatus.WAITING, new ArrayList<>());
+            List<TokenQueueItem> passedItems = tokenGroup.getOrDefault(ItemStatus.PASSED, new ArrayList<>());
 
             if (passedItems.size() == 0) continue;
 
@@ -49,7 +49,8 @@ public class ScheduledTaskExecutor {
             }
 
             tokenManager.removeExpiredAccessToken(expiredTokens);
-            tokenManager.convertToPass(waitingItems, expiredTokens.size());
+            int availableAccess = queue.getAccessCapacity() - (passedItems.size() - expiredTokens.size());
+            tokenManager.convertToPass(waitingItems, availableAccess);
         }
     }
 

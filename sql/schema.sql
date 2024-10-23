@@ -55,9 +55,9 @@ create table token_queue (
 );
 
 create table token_queue_item (
-                                  position integer not null,
-                                  created_at timestamp(6),
-                                  expired_at timestamp(6),
+                                  position integer,
+                                  created_at datetime not null,
+                                  expired_at datetime,
                                   id bigint AUTO_INCREMENT,
                                   token_queue_id bigint,
                                   user_id bigint,
