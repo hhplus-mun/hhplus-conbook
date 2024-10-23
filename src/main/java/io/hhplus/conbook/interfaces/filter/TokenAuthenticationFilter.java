@@ -48,11 +48,22 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             AccessTokenInfo tokenInfo = tokenManager.parseAccessTokenInfo(token);
+            if (requestURI.contains(ApiRoutes.BASE_CONCERT_API_PATH)
+                    && !isValidConcertAccess(requestURI, tokenInfo.concertId()))
+                throw new AccessDeniedException(ErrorCode.CONCERT_UNAUTHORIZED_ACCESS.getCode());
+
             request.setAttribute(CustomAttribute.CONCERT_ID, tokenInfo.concertId());
             request.setAttribute(CustomAttribute.USER_UUID, tokenInfo.uuid());
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isValidConcertAccess(String requestURI, long concertId) {
+        String concertPath = requestURI.substring(ApiRoutes.BASE_CONCERT_API_PATH.length());
+        log.info("concertPath: {}", concertPath);
+
+        return Long.parseLong(concertPath.split("/")[1]) == concertId ? true : false;
     }
 
     private String extractJwt(String authorizationHeader) {

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static io.hhplus.conbook.application.concert.ConcertValidator.validate;
 
 @RestController
 @RequestMapping(ApiRoutes.BASE_CONCERT_API_PATH)
@@ -27,11 +26,8 @@ public class ConcertController implements ConcertControllerApi {
     @Override
     @GetMapping("/{id}/available-dates")
     public ConcertResponse.AvailableDates availableDates(
-            @PathVariable Long id,
-            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
+            @PathVariable Long id
     ) {
-        validate(id, concertId);
-
         List<ConcertResult.Search> searchResults = concertFacade.availableDates(new ConcertCommand.Search(id));
 
         return new ConcertResponse.AvailableDates(
@@ -53,11 +49,8 @@ public class ConcertController implements ConcertControllerApi {
     @GetMapping("/{id}/available-seats")
     public ConcertResponse.AvailableSeats availableSeats(
             @PathVariable Long id,
-            @RequestParam String date,
-            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
+            @RequestParam String date
     ) {
-        validate(id, concertId);
-
         ConcertResult.Status seatStatus = concertFacade.availableSeats(new ConcertCommand.Status(id, date));
 
         return new ConcertResponse.AvailableSeats(
@@ -78,10 +71,8 @@ public class ConcertController implements ConcertControllerApi {
     public ConcertResponse.Booking bookSeat(
             @PathVariable long id,
             @RequestBody ConcertRequest.Booking req,
-            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String userUUID
     ) {
-        validate(id, concertId);
         ConcertResult.BookingSeat result = concertFacade.bookConcertSeat(new ConcertCommand.Booking(id, req.date(), userUUID, req.seatId()));
 
         return new ConcertResponse.Booking(
