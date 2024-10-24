@@ -1,5 +1,6 @@
 package io.hhplus.conbook.application.concert;
 
+import io.hhplus.conbook.application.concert.dto.ConcertCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

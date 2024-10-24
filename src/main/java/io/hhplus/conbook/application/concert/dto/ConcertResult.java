@@ -1,9 +1,8 @@
-package io.hhplus.conbook.application.concert;
+package io.hhplus.conbook.application.concert.dto;
 
 import lombok.Builder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class ConcertResult {
@@ -30,13 +29,4 @@ public class ConcertResult {
             int seatNo
     ) {}
 
-    @Builder
-    public record BookingSeat(
-            long bookingId,
-            String userName,
-            String rowName,
-            int seatNo,
-            LocalDateTime bookingDateTime,
-            LocalDateTime expirationTime
-    ) {}
 }

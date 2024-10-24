@@ -1,8 +1,11 @@
 package io.hhplus.conbook.interfaces.api.concert;
 
-import io.hhplus.conbook.application.concert.ConcertCommand;
+import io.hhplus.conbook.application.concert.ConcertBookingFacade;
+import io.hhplus.conbook.application.concert.dto.ConcertBookingCommand;
+import io.hhplus.conbook.application.concert.dto.ConcertBookingResult;
+import io.hhplus.conbook.application.concert.dto.ConcertCommand;
 import io.hhplus.conbook.application.concert.ConcertFacade;
-import io.hhplus.conbook.application.concert.ConcertResult;
+import io.hhplus.conbook.application.concert.dto.ConcertResult;
 import io.hhplus.conbook.interfaces.api.ApiRoutes;
 import io.hhplus.conbook.interfaces.filter.CustomAttribute;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import java.util.List;
 public class ConcertController implements ConcertControllerApi {
 
     private final ConcertFacade concertFacade;
+    private final ConcertBookingFacade concertBookingFacade;
 
     /**
      * 콘서트 예약가능 날짜 API
@@ -73,7 +77,7 @@ public class ConcertController implements ConcertControllerApi {
             @RequestBody ConcertRequest.Booking req,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String userUUID
     ) {
-        ConcertResult.BookingSeat result = concertFacade.bookConcertSeat(new ConcertCommand.Booking(id, req.date(), userUUID, req.seatId()));
+        ConcertBookingResult.BookingSeat result = concertBookingFacade.bookConcertSeat(new ConcertBookingCommand.BookingSeat(id, req.date(), userUUID, req.seatId()));
 
         return new ConcertResponse.Booking(
                 result.bookingId(),
