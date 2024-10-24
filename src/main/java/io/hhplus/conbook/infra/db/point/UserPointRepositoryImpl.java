@@ -34,7 +34,7 @@ public class UserPointRepositoryImpl implements UserPointRepository {
 
     @Override
     public UserPoint getUserPoint(long userId) {
-        return userPointJpaRepository.findById(userId)
+        return userPointJpaRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.POINT_INFO_NOT_FOUND.getCode()))
                 .toDomain();
     }

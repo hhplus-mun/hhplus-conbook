@@ -32,7 +32,7 @@ public class BookingPaymentFacade {
     public BookingPaymentResult.Paid processPayment(BookingPaymentCommand.Paid paid) {
         Booking booking = bookingService.completePayment(paid.bookingId());
         User user = userService.getUserByUUID(paid.userUUID());
-        pointService.spendPoint(user.getId(), booking.getBookingPrice(),paid.reqTime());
+        pointService.spendPoint(user.getId(), booking.getBookingPrice(), paid.reqTime());
 
         Payment payment = paymentService.savePaymentHistory(booking, user);
         tokenManager.expireAccessRight(paid.concertId(), paid.userUUID());
