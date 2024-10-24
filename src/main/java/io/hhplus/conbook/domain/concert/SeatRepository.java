@@ -5,7 +5,7 @@ import java.util.List;
 public interface SeatRepository {
     List<Seat> findAvailableListBy(Long scheduleId);
 
-    Seat findSeatWithPessimisticLock(long seatId);
+    Seat findSeatWithPessimisticLock(long seatId, long scheduleId);
 
     void updateStatus(Seat seat);
 }

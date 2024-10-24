@@ -27,7 +27,7 @@ public class BookingService {
      */
     @Transactional
     public Booking createBooking(ConcertSchedule schedule, long seatId, User user) {
-        Seat seat = seatRepository.findSeatWithPessimisticLock(seatId);
+        Seat seat = seatRepository.findSeatWithPessimisticLock(seatId, schedule.getId());
         if (seat.isOccupied()) throw new AlreadyOccupiedException(ErrorCode.NOT_AVAILABLE_SEAT.getCode());
 
         seat.addSchedule(schedule);
@@ -41,6 +41,9 @@ public class BookingService {
         return saved;
     }
 
+    /**
+     * TODO: scheduler 동작 시 기능은 정상동작하지만 Booking이 이루어진 시간이 변경되는 이슈 존재.
+     */
     @Transactional
     public void checkOrUpdate(long bookingId) {
         Booking found = bookingRepository.findBy(bookingId);
