@@ -15,12 +15,12 @@ public class TokenQueueItem {
     private TokenQueue queue;
     private User user;
     private ItemStatus status;
-    private int position;
+    private Integer position;
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
 
     @Builder
-    public TokenQueueItem(TokenQueue queue, User user, ItemStatus status, int position, LocalDateTime createdAt, LocalDateTime expiredAt) {
+    public TokenQueueItem(TokenQueue queue, User user, ItemStatus status, Integer position, LocalDateTime createdAt, LocalDateTime expiredAt) {
         this.queue = queue;
         this.user = user;
         this.status = status;

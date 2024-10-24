@@ -3,13 +3,14 @@ package io.hhplus.conbook.interfaces.api.point;
 import io.hhplus.conbook.application.point.PointCommand;
 import io.hhplus.conbook.application.point.PointFacade;
 import io.hhplus.conbook.application.point.PointResult;
+import io.hhplus.conbook.interfaces.api.ApiRoutes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/v1/point")
+@RequestMapping(ApiRoutes.BASE_POINT_API_PATH)
 @RequiredArgsConstructor
 public class PointController implements PointControllerApi {
 

@@ -7,15 +7,15 @@ import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
+@Transactional(readOnly = true)
 public class TokenManager {
 
     private final TokenQueueRepository queueRepository;
@@ -30,14 +30,18 @@ public class TokenManager {
      * @param concert
      * @return
      */
+    @Transactional
     public Token creaateToken(User user, Concert concert) {
         TokenQueue tokenQueue = queueRepository.getTokenQueue(concert.getId());
-        Map<ItemStatus, List<TokenQueueItem>> groups = queueItemRepository.itemList(concert.getId())
-                .stream()
-                .collect(Collectors.groupingBy(TokenQueueItem::getStatus));
+        List<TokenQueueItem> tokenQueueItemList = queueItemRepository.itemList(concert.getId());
+        if (isUserTokenExists(user.getId(), tokenQueueItemList))
+            throw new IllegalStateException(ErrorCode.TOKEN_ALREADY_EXIST.getCode());
 
-        List<TokenQueueItem> waitingItems = groups.get(ItemStatus.WAITING);
-        List<TokenQueueItem> passedItems = groups.get(ItemStatus.PASSED);
+        Map<ItemStatus, List<TokenQueueItem>> groups =
+                tokenQueueItemList.stream().collect(Collectors.groupingBy(TokenQueueItem::getStatus));
+
+        List<TokenQueueItem> waitingItems = groups.getOrDefault(ItemStatus.WAITING, new ArrayList<>());
+        List<TokenQueueItem> passedItems = groups.getOrDefault(ItemStatus.PASSED, new ArrayList<>());
         CustomTokenClaims customTokenClaims = CustomTokenClaims.getDefaultClaims(concert.getId(), user.getUuid());
 
         if (hasWaitingItems(tokenQueue, passedItems)) {
@@ -58,6 +62,15 @@ public class TokenManager {
         );
 
         return new Token(jwt, customTokenClaims.getType());
+    }
+
+    private boolean isUserTokenExists(Long id, List<TokenQueueItem> tokenList) {
+        Optional<TokenQueueItem> found =
+                tokenList.stream()
+                        .filter(token -> token.getUser().getId().equals(id))
+                        .findAny();
+
+        return found.isPresent() ? true : false;
     }
 
     private boolean hasWaitingItems(TokenQueue tokenQueue, List<TokenQueueItem> passedItems) {
@@ -103,6 +116,7 @@ public class TokenManager {
     }
 
     // TODO: for-loop를 활용해서 token을 delete하지만 bulk delete를 활용할 수 있도록 추후 리팩토링
+    @Transactional
     public void removeExpiredAccessToken(List<TokenQueueItem> expiredTokens) {
         for (TokenQueueItem tokenItem : expiredTokens) {
             queueItemRepository.remove(tokenItem);
@@ -110,10 +124,13 @@ public class TokenManager {
     }
 
     // TODO: for-loop를 활용해서 token 상태를 update하지만 bulk update를 활용할 수 있도록 추후 리팩토링
+    @Transactional
     public void convertToPass(List<TokenQueueItem> waitingItems, int count) {
         waitingItems.sort(Comparator.comparing(TokenQueueItem::getPosition));
 
         for(int i=0; i<count; i++) {
+            if (waitingItems.size() == 0) return;
+
             TokenQueueItem token = waitingItems.remove(0);
             token.switchStatusToPass();
 
@@ -129,6 +146,8 @@ public class TokenManager {
         }
     }
 
+    // TODO: expire 처리 후 DB상에서는 유효성이 사라지나 filter에서는 아직 사용가능 -> 만료처리할 수 있도록 수정
+    @Transactional
     public void expireAccessRight(long concertId, String userUUID) {
         TokenQueueItem tokenItem = queueItemRepository.findItemBy(concertId, userUUID);
         tokenItem.expire();

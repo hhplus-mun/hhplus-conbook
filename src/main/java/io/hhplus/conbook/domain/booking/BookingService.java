@@ -7,26 +7,16 @@ import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class BookingService {
-    /**
-     * 예약시 결제 이전까지 점유할 수 있는 시간 - 5분
-     */
-    private final int DEFAULT_BOOKING_STAGING_MIN = 5;
-
     private final SeatRepository seatRepository;
     private final BookingRepository bookingRepository;
-    private final TaskScheduler taskScheduler;
 
     /**
      * 예약 후 5분 이내로 결제가 이루어지지 않으면 예약을 취소처리한다.
@@ -37,7 +27,7 @@ public class BookingService {
      */
     @Transactional
     public Booking createBooking(ConcertSchedule schedule, long seatId, User user) {
-        Seat seat = seatRepository.findSeatWithPessimisticLock(seatId);
+        Seat seat = seatRepository.findSeatWithPessimisticLock(seatId, schedule.getId());
         if (seat.isOccupied()) throw new AlreadyOccupiedException(ErrorCode.NOT_AVAILABLE_SEAT.getCode());
 
         seat.addSchedule(schedule);
@@ -51,28 +41,24 @@ public class BookingService {
         return saved;
     }
 
-    public void addSchedule(Booking booking) {
-        // 단발성 스케쥴러 등록
-        Runnable task = () -> {
-            log.info("\nTaskScheduler has been executed");
+    /**
+     * TODO: scheduler 동작 시 기능은 정상동작하지만 Booking이 이루어진 시간이 변경되는 이슈 존재.
+     */
+    @Transactional
+    public void checkOrUpdate(long bookingId) {
+        Booking found = bookingRepository.findBy(bookingId);
 
-            Booking found = bookingRepository.findBy(booking.getId());
+        if (!found.getStatus().equals(BookingStatus.PAID)) {
+            Seat seat = found.getSeat();
+            seat.hasCancelled();
+            seatRepository.updateStatus(seat);
 
-            if (!found.getStatus().equals(BookingStatus.PAID)) {
-                Seat seat = booking.getSeat();
-                seat.hasCancelled();
-                seatRepository.updateStatus(seat);
-
-                found.hasCancelled();
-                bookingRepository.save(found);
-            }
-        };
-        Instant startTime =
-                LocalDateTime.now().plusMinutes(DEFAULT_BOOKING_STAGING_MIN).atZone(ZoneId.systemDefault()).toInstant();
-
-        taskScheduler.schedule(task,startTime);
+            found.hasCancelled();
+            bookingRepository.save(found);
+        }
     }
 
+    @Transactional
     public Booking completePayment(long bookingId) {
         Booking booking = bookingRepository.findBy(bookingId);
         if (!booking.getStatus().equals(BookingStatus.RESERVED)) throw new IllegalStateException(ErrorCode.INVALID_BOOKING_STATUS.getCode());

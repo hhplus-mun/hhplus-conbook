@@ -5,6 +5,7 @@ import io.hhplus.conbook.domain.token.TokenQueueRepository;
 import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class TokenQueueRepositoryImpl implements TokenQueueRepository {
                 .toDomainWithoutItems();
     }
 
+    @Transactional
     @Override
     public List<TokenQueue> getQueueListWithoutItems() {
         return tokenQueueJpaRepository.findAll().stream()

@@ -1,5 +1,7 @@
 package io.hhplus.conbook.application.concert;
 
+import io.hhplus.conbook.application.concert.dto.ConcertBookingCommand;
+import io.hhplus.conbook.application.concert.dto.ConcertBookingResult;
 import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.domain.user.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -10,10 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class ConcertFacadeTest {
+class ConcertBookingFacadeTest {
 
     @Autowired
-    ConcertFacade concertFacade;
+    ConcertBookingFacade concertBookingFacade;
     @Autowired
     UserService userService;
 
@@ -23,13 +25,13 @@ class ConcertFacadeTest {
         // given
         // sql 디렉토리에 아래 내용 정부 저장되어있음
         long concertId = 1;
-        String date = "20241002";
+        String date = "20241001";
         String uuid = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
         long seatId = 1L;
         User userByUUID = userService.getUserByUUID(uuid);
 
         // when
-        ConcertResult.BookingSeat booking = concertFacade.bookConcertSeat(new ConcertCommand.Booking(concertId, date, uuid, seatId));
+        ConcertBookingResult.BookingSeat booking = concertBookingFacade.bookConcertSeat(new ConcertBookingCommand.BookingSeat(concertId, date, uuid, seatId));
 
         // then
         assertThat(booking.userName()).isEqualTo(userByUUID.getName());

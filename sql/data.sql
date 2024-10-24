@@ -12,7 +12,12 @@ INSERT INTO concert_schedule(concert_id, concert_date, occupied_count, capacity)
      (2, '2024-11-15', 50, 50),
      (2, '2024-11-16', 43, 50);
 
-INSERT INTO users(name, uuid) VALUES ('admin', 'f47ac10b-58cc-4372-a567-0e02b2c3d479');
+INSERT INTO users(name, uuid) VALUES
+    ('admin', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
+    ('manager', '266cab91-1e74-46ad-b475-4fc101ad83cf');
+
+INSERT user_point(user_id, updated_time, `point`)
+SELECT u.user_id, NOW(), 0 FROM users u ORDER BY user_id;
 
 -- 좌석
 INSERT INTO seat(concert_schedule_id, price, is_occupied, row_name, seat_no) VALUES

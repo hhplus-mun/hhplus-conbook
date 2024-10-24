@@ -26,6 +26,7 @@ public class BookingPaymentFacade {
      * 1. 요청한 예약에 대한 결제처리
      * 2. 사용자 포인트 삭감.
      * 3. 결제 이력 저장
+     * 4. 액세스 토큰 만료처리
      */
     @Transactional
     public BookingPaymentResult.Paid processPayment(BookingPaymentCommand.Paid paid) {

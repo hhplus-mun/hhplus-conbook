@@ -1,7 +1,8 @@
-package io.hhplus.conbook.config;
+package io.hhplus.conbook.interfaces.filter;
 
 import io.hhplus.conbook.domain.token.AccessTokenInfo;
 import io.hhplus.conbook.domain.token.TokenManager;
+import io.hhplus.conbook.interfaces.api.ApiRoutes;
 import io.hhplus.conbook.interfaces.api.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,8 +28,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader(JWT_AUTHORIZATION);
         String requestURI = request.getRequestURI();
+
+        if (requestURI.contains(ApiRoutes.BASE_TOKEN_API_PATH)) {
+            log.info("url: {}", requestURI);
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+        String authorizationHeader = request.getHeader(JWT_AUTHORIZATION);
         log.info("token: {}, url: {}", authorizationHeader, requestURI);
 
         if (!StringUtils.hasText(authorizationHeader))
@@ -40,11 +48,22 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             AccessTokenInfo tokenInfo = tokenManager.parseAccessTokenInfo(token);
+            if (requestURI.contains(ApiRoutes.BASE_CONCERT_API_PATH)
+                    && !isValidConcertAccess(requestURI, tokenInfo.concertId()))
+                throw new AccessDeniedException(ErrorCode.CONCERT_UNAUTHORIZED_ACCESS.getCode());
+
             request.setAttribute(CustomAttribute.CONCERT_ID, tokenInfo.concertId());
             request.setAttribute(CustomAttribute.USER_UUID, tokenInfo.uuid());
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isValidConcertAccess(String requestURI, long concertId) {
+        String concertPath = requestURI.substring(ApiRoutes.BASE_CONCERT_API_PATH.length());
+        log.info("concertPath: {}", concertPath);
+
+        return Long.parseLong(concertPath.split("/")[1]) == concertId ? true : false;
     }
 
     private String extractJwt(String authorizationHeader) {

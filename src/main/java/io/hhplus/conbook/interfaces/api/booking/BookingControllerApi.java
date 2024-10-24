@@ -1,6 +1,6 @@
 package io.hhplus.conbook.interfaces.api.booking;
 
-import io.hhplus.conbook.config.CustomAttribute;
+import io.hhplus.conbook.interfaces.filter.CustomAttribute;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +17,7 @@ public interface BookingControllerApi {
             description = "예약을 결제 처리하고 결제 내역을 생성"
     )
     @PostMapping("/{id}/payments")
-    BookingResponse.Payments payments(
+    BookingResponse.Payment payment(
             @PathVariable long id,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String uuid,
             @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId

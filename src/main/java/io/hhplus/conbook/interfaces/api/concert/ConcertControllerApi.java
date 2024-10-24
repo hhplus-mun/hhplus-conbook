@@ -1,6 +1,6 @@
 package io.hhplus.conbook.interfaces.api.concert;
 
-import io.hhplus.conbook.config.CustomAttribute;
+import io.hhplus.conbook.interfaces.filter.CustomAttribute;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,8 +20,7 @@ public interface ConcertControllerApi {
     )
     @GetMapping("/{id}/available-dates")
     ConcertResponse.AvailableDates availableDates(
-            @PathVariable Long id,
-            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
+            @PathVariable Long id
     );
 
     @Operation(
@@ -31,8 +30,7 @@ public interface ConcertControllerApi {
     @GetMapping("/{id}/available-seats")
     ConcertResponse.AvailableSeats availableSeats(
             @PathVariable Long id,
-            @RequestParam String date,
-            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
+            @RequestParam String date
     );
 
     @Operation(
@@ -54,7 +52,6 @@ public interface ConcertControllerApi {
                     ))
             )
             @RequestBody ConcertRequest.Booking req,
-            @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String userUUID
     );
 }

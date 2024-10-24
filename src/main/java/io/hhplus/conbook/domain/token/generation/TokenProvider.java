@@ -2,23 +2,46 @@ package io.hhplus.conbook.domain.token.generation;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Slf4j
 @Component
 @Getter(AccessLevel.PACKAGE)
 public class TokenProvider {
 
     private final SecretKey secretKey;
 
+    /**
+     * key 생성에 사용되는 String 값은 hhplus 과제이기 때문에 노출된다. <br>
+     * 실제 프로젝트에서 사용 시 외부에 노출시키지 않는다.
+     * 
+     * 알고리즘: 32byte(256bits)이기 때문에 HmacSHA256 사용
+     */
     public TokenProvider() {
-        secretKey = Jwts.SIG.HS256.key().build();
+        String plainKey = "HANGHAEPLUS_TOKEN_SECRET_KEY_2024_BACKEND_6TH";
+        secretKey = createSecretKey(plainKey);
+    }
+
+    private SecretKey createSecretKey(String plainKey) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] keyBytes = md.digest(plainKey.getBytes(StandardCharsets.UTF_8));
+            return Keys.hmacShaKeyFor(keyBytes);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 Algorithm을 찾을 수 없습니다.");
+        }
     }
 
     /**
@@ -47,7 +70,7 @@ public class TokenProvider {
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("jwt parsing exception: ", e);
             return false;
         }
     }

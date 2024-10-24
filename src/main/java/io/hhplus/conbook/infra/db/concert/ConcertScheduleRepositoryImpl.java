@@ -5,12 +5,14 @@ import io.hhplus.conbook.domain.concert.ConcertScheduleRepository;
 import io.hhplus.conbook.interfaces.api.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ConcertScheduleRepositoryImpl implements ConcertScheduleRepository {
 
     private final ConcertScheduleJpaRepository concertScheduleJpaRepository;
@@ -31,6 +33,7 @@ public class ConcertScheduleRepositoryImpl implements ConcertScheduleRepository 
     }
 
     @Override
+    @Transactional
     public ConcertSchedule saveOrUpdate(ConcertSchedule schedule) {
         return concertScheduleJpaRepository.save(new ConcertScheduleEntity(schedule))
                 .toDomain();

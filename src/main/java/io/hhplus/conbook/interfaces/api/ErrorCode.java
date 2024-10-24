@@ -3,8 +3,6 @@ package io.hhplus.conbook.interfaces.api;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
-
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
@@ -18,6 +16,8 @@ public enum ErrorCode {
     CONCERT_NOT_FOUND("2001", "콘서트 정보를 찾을 수 없습니다."),
     CONCERT_SCHEDULE_NOT_FOUND("2002", "콘서트 일정 정보를 찾을 수 없습니다."),
     CONCERT_UNAUTHORIZED_ACCESS("2003", "해당 콘서트에 대한 권한이 없습니다."),
+    CONCERT_DATE_FOMRAT("2004", "날짜 형식이 유효하지 않습니다. (yyMMdd 형식이어야 합니다)"),
+    SEAT_NOT_FOUND("2005", "좌석 정보를 찾을 수 없습니다."),
 
     // --- 예약 도메인 Error ---
 
@@ -33,10 +33,11 @@ public enum ErrorCode {
 
     // --- 토큰 도메인 Error ---
 
-    QUEUE_NOT_FOUND("5001", "해당 콘서트에 대한 대기열을 찾을 수 없습니다."),
-    TOKEN_NOT_FOUND("5002", "해당 콘서트에 대한 사용자의 토큰 정보를 찾을 수 없습니다."),
-    ACCESS_TOKEN_VALIDATION_FAILED("5003", "ACCESS 토큰 검증에 실패하였습니다."),
-    WAITING_TOKEN_VALIDATION_FAILED("5004", "WAITING 토큰 검증에 실패하였습니다."),
+    TOKEN_ALREADY_EXIST("5001", "해당 콘서트에 대한 사용자 토큰이 이미 존재합니다."),
+    QUEUE_NOT_FOUND("5002", "해당 콘서트에 대한 대기열을 찾을 수 없습니다."),
+    TOKEN_NOT_FOUND("5003", "해당 콘서트에 대한 사용자의 토큰 정보를 찾을 수 없습니다."),
+    ACCESS_TOKEN_VALIDATION_FAILED("5004", "ACCESS 토큰 검증에 실패하였습니다."),
+    WAITING_TOKEN_VALIDATION_FAILED("5005", "WAITING 토큰 검증에 실패하였습니다."),
 
     // --- 필터 Error ---
     

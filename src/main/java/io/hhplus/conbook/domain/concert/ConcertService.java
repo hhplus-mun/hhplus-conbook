@@ -2,6 +2,7 @@ package io.hhplus.conbook.domain.concert;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ConcertService {
     private final ConcertRepository concertRepository;
     private final ConcertScheduleRepository scheduleRepository;
@@ -42,6 +44,7 @@ public class ConcertService {
         return localDate;
     }
 
+    @Transactional
     public void updateSeatStatus(long concertId, String date) {
         LocalDate localDate = convertToLocalDate(date);
         ConcertSchedule schedule = scheduleRepository.findScheduleBy(concertId, localDate);

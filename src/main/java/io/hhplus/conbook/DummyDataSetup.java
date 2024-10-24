@@ -21,8 +21,6 @@ public class DummyDataSetup {
 
     @PostConstruct
     private void setup() {
-
-
         List<Concert> concertList = concertRepository.getConcertList();
         if (concertList.size() == 0) {
             return;

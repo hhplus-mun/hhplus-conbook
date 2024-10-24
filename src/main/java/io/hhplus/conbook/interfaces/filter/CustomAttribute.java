@@ -1,4 +1,4 @@
-package io.hhplus.conbook.config;
+package io.hhplus.conbook.interfaces.filter;
 
 /**
  * Filter에서 token을 검증한 후, <br>

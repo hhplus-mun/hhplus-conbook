@@ -25,6 +25,7 @@ public class ConcertScheduleEntity {
     private int capacity;
 
     public ConcertScheduleEntity(ConcertSchedule concertSchedule) {
+        this.id = concertSchedule.getId();
         this.concert = new ConcertEntity(concertSchedule.getConcert());
         this.concertDate = concertSchedule.getConcertDate();
         this.occupiedCount = concertSchedule.getOccupiedCount();
