@@ -34,11 +34,10 @@ public class ConcertBookingFacade {
     @Transactional
     public ConcertBookingResult.BookingSeat bookConcertSeat(ConcertBookingCommand.BookingSeat booking) {
         User user = userService.getUserByUUID(booking.userUUID());
-
         ConcertSchedule concertSchedule = concertService.getConcertSchedule(booking.concertId(), booking.date());
+
         Booking bookingResult = bookingService.createBooking(concertSchedule, booking.seatId(), user);
         scheduledTaskExecutor.addSchedule(bookingResult.getId(), DEFAULT_BOOKING_STAGING_MIN);
-
         concertService.updateSeatStatus(booking.concertId(), booking.date());
 
         return ConcertBookingResult.BookingSeat.builder()

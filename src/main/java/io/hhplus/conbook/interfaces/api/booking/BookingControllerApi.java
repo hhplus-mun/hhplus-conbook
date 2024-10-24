@@ -17,7 +17,7 @@ public interface BookingControllerApi {
             description = "예약을 결제 처리하고 결제 내역을 생성"
     )
     @PostMapping("/{id}/payments")
-    BookingResponse.Payments payments(
+    BookingResponse.Payment payment(
             @PathVariable long id,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String uuid,
             @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId

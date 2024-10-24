@@ -37,7 +37,7 @@ class BookingServiceUnitTest {
         User user = new User(1L, "hhp", UUID.randomUUID().toString());
         Seat seat = new Seat(1L, null, false, "A", 1, 1000);
 
-        given(seatRepository.findSeatWithPessimisticLock(1L))
+        given(seatRepository.findSeatWithPessimisticLock(1L, 1L))
                 .willReturn(seat);
         Booking booking = new Booking(seat, user, BookingStatus.RESERVED);
         ReflectionTestUtils.setField(booking, "id", 1L);

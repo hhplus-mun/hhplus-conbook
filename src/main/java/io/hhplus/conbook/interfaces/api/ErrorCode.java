@@ -17,6 +17,7 @@ public enum ErrorCode {
     CONCERT_SCHEDULE_NOT_FOUND("2002", "콘서트 일정 정보를 찾을 수 없습니다."),
     CONCERT_UNAUTHORIZED_ACCESS("2003", "해당 콘서트에 대한 권한이 없습니다."),
     CONCERT_DATE_FOMRAT("2004", "날짜 형식이 유효하지 않습니다. (yyMMdd 형식이어야 합니다)"),
+    SEAT_NOT_FOUND("2005", "좌석 정보를 찾을 수 없습니다."),
 
     // --- 예약 도메인 Error ---
 

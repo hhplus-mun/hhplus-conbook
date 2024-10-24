@@ -22,8 +22,8 @@ public class BookingController implements BookingControllerApi {
      * @param id bookingId
      */
     @Override
-    @PostMapping("/{id}/payments")
-    public BookingResponse.Payments payments(
+    @PostMapping("/{id}/payment")
+    public BookingResponse.Payment payment(
             @PathVariable long id,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String uuid,
             @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
@@ -38,6 +38,6 @@ public class BookingController implements BookingControllerApi {
                                 .build()
                 );
 
-        return new BookingResponse.Payments(result.bookingId(), result.paymentPrice(), result.paymentTime());
+        return new BookingResponse.Payment(result.bookingId(), result.paymentPrice(), result.paymentTime());
     }
 }

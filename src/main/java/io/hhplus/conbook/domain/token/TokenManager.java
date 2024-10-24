@@ -146,6 +146,7 @@ public class TokenManager {
         }
     }
 
+    // TODO: expire 처리 후 DB상에서는 유효성이 사라지나 filter에서는 아직 사용가능 -> 만료처리할 수 있도록 수정
     @Transactional
     public void expireAccessRight(long concertId, String userUUID) {
         TokenQueueItem tokenItem = queueItemRepository.findItemBy(concertId, userUUID);

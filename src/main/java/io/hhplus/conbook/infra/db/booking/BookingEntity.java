@@ -6,6 +6,7 @@ import io.hhplus.conbook.infra.db.concert.SeatEntity;
 import io.hhplus.conbook.infra.db.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "booking")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class BookingEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")

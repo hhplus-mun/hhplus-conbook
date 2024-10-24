@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PointService {
 
     private final UserPointRepository userPointRepository;
@@ -28,7 +29,6 @@ public class PointService {
     public UserPoint getBalance(long userId) {
         return userPointRepository.getUserPoint(userId);
     }
-
 
     @Transactional
     public UserPoint spendPoint(Long userId, long amount, LocalDateTime reqTime) {

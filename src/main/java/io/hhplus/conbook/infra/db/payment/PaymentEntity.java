@@ -31,11 +31,12 @@ public class PaymentEntity {
     @Column(updatable = false)
     private LocalDateTime paidAt;
 
-    public PaymentEntity(BookingEntity booking, UserEntity user, long amount, LocalDateTime paidAt) {
-        this.booking = booking;
-        this.user = user;
-        this.amount = amount;
-        this.paidAt = paidAt;
+    public PaymentEntity(Payment payment) {
+        this.id = payment.getId();
+        this.booking = new BookingEntity(payment.getBooking());
+        this.user = new UserEntity(payment.getUser());
+        this.amount = payment.getAmount();
+        this.paidAt = payment.getPaidAt();
     }
 
     public Payment toDomain() {
