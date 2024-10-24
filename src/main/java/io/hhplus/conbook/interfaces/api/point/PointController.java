@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @RestController
 @RequestMapping(ApiRoutes.BASE_POINT_API_PATH)
@@ -28,7 +29,7 @@ public class PointController implements PointControllerApi {
             @PathVariable long id,
             @RequestBody long amount
     ) {
-        PointResult.Charge result = pointFacade.chargePoint(new PointCommand.Charge(id, amount, LocalDateTime.now()));
+        PointResult.Charge result = pointFacade.chargePoint(new PointCommand.Charge(id, amount, LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)));
 
         return new PointResponse.Charge(
                 result.userId(),

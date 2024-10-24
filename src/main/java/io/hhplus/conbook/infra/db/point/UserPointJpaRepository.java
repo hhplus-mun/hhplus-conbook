@@ -10,9 +10,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserPointJpaRepository extends JpaRepository<UserPointEntity, Long> {
+
     @EntityGraph(attributePaths = {"user"})
-    @Override
-    Optional<UserPointEntity> findById(Long aLong);
+    Optional<UserPointEntity> findByUserId(Long userId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select up from UserPointEntity up join fetch up.user u where u.id = :userId")

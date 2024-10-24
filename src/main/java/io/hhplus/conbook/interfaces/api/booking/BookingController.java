@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @RestController
 @RequestMapping(ApiRoutes.BASE_BOOKING_API_PATH)
@@ -34,7 +35,7 @@ public class BookingController implements BookingControllerApi {
                                 .bookingId(id)
                                 .concertId(concertId)
                                 .userUUID(uuid)
-                                .reqTime(LocalDateTime.now())
+                                .reqTime(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS))
                                 .build()
                 );
 
