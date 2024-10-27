@@ -18,8 +18,7 @@ public class PointService {
     public UserPoint chargePoint(long userId, long amount, LocalDateTime reqTime) {
         // start Lock
         UserPoint userPoint = userPointRepository.findPointWithPessimisticLock(userId);
-        if (userPoint.getUpdatedTime().equals(reqTime)
-                || userPoint.getUpdatedTime().isAfter(reqTime))
+        if (isReqTimeValid(reqTime, userPoint.getUpdatedTime()))
             throw new NotValidRequestException(ErrorCode.INVALID_POINT_REQUEST.getCode());
 
         long totalPoint = userPoint.getPoint() + amount;
@@ -36,8 +35,7 @@ public class PointService {
     public UserPoint spendPoint(Long userId, long amount, LocalDateTime reqTime) {
         // start Lock
         UserPoint userPoint = userPointRepository.findPointWithPessimisticLock(userId);
-        if (userPoint.getUpdatedTime().equals(reqTime)
-                || userPoint.getUpdatedTime().isAfter(reqTime))
+        if (isReqTimeValid(reqTime, userPoint.getUpdatedTime()))
             throw new NotValidRequestException(ErrorCode.INVALID_POINT_REQUEST.getCode());
 
         long totalPoint = userPoint.getPoint() - amount;
@@ -45,5 +43,9 @@ public class PointService {
         userPoint.updatePointWith(totalPoint, reqTime);
 
         return userPointRepository.update(userPoint);
+    }
+
+    private boolean isReqTimeValid(LocalDateTime reqTime, LocalDateTime updatedTime) {
+        return updatedTime.equals(reqTime) || updatedTime.isAfter(reqTime);
     }
 }
