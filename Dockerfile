@@ -9,4 +9,4 @@ CMD ["redis-server"]
 #docker build -f Dockerfile . -t simple-redis
 
 # docker container run
-#docker run -d -p 6379:6379 simple-redis --name simple-redis
+#docker run --name simple-redis -d -p 6379:6379 simple-redis
