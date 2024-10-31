@@ -13,6 +13,8 @@ import io.hhplus.conbook.infra.db.concert.SeatJpaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -30,6 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class BookingServiceTest {
+
+    private static final Logger log = LoggerFactory.getLogger(BookingServiceTest.class);
+
     // test target
     @Autowired
     BookingService bookingService;
@@ -154,8 +159,8 @@ class BookingServiceTest {
             tasks.add(() -> {
                 try {
                     bookingService.createBooking(schedule, seat.getId(), user);
-                } catch (AlreadyOccupiedException e) {
-                    System.out.printf("[FAIL] 예약 실패 - 사용자 id: %d, 좌석 id: %d\n", user.getId(), seat.getId());
+                } catch (AlreadyOccupiedException | IllegalStateException e) {
+                    log.error("[FAIL] 예약 실패 - 사용자 id: {}, 좌석 id: {}", user.getId(), seat.getId());
                 }
             });
         }

@@ -1,5 +1,7 @@
 package io.hhplus.conbook.domain.booking;
 
+import io.hhplus.conbook.aop.DistributedLock;
+import io.hhplus.conbook.aop.SimpleLockKey;
 import io.hhplus.conbook.domain.concert.ConcertSchedule;
 import io.hhplus.conbook.domain.concert.Seat;
 import io.hhplus.conbook.domain.concert.SeatRepository;
@@ -25,9 +27,10 @@ public class BookingService {
      * @param user
      * @return
      */
+    @DistributedLock
     @Transactional
-    public Booking createBooking(ConcertSchedule schedule, long seatId, User user) {
-        Seat seat = seatRepository.findSeatWithPessimisticLock(seatId, schedule.getId());
+    public Booking createBooking(ConcertSchedule schedule, @SimpleLockKey long seatId, User user) {
+        Seat seat = seatRepository.findSeatBy(seatId, schedule.getId());
         if (seat.isOccupied()) throw new AlreadyOccupiedException(ErrorCode.NOT_AVAILABLE_SEAT.getCode());
 
         seat.addSchedule(schedule);
