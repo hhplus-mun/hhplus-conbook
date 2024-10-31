@@ -7,5 +7,7 @@ public interface SeatRepository {
 
     Seat findSeatWithPessimisticLock(long seatId, long scheduleId);
 
+    Seat findSeatBy(long seatId, long scheduleId);
+
     void updateStatus(Seat seat);
 }
