@@ -40,8 +40,11 @@ public enum ErrorCode {
     WAITING_TOKEN_VALIDATION_FAILED("5005", "WAITING 토큰 검증에 실패하였습니다."),
 
     // --- 필터 Error ---
-    
+
     UNAUTHORIZED_ACCESS("6001", "허가되지 않은 접근입니다."),
+
+    // --- 필터 Error ---
+    LOCK_ACQUISITION_FAILED("7001", "분산 락(Distributed Lock) 획득에 실패하였습니다."),
 
     // --- Server Error ---
 
