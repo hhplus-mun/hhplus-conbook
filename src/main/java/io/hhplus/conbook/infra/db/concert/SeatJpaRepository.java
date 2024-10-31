@@ -18,4 +18,6 @@ public interface SeatJpaRepository extends JpaRepository<SeatEntity, Long> {
     @Query("select s from SeatEntity s where s.id = :id and s.concertSchedule.id = :scheduleId")
     Optional<SeatEntity> findByWithPessimisticLock(@Param("id") long id, @Param("scheduleId") long scheduleId);
 
+    @Query("select s from SeatEntity s where s.id = :id and s.concertSchedule.id = :scheduleId")
+    Optional<SeatEntity> findBy(@Param("id") long id, @Param("scheduleId") long scheduleId);
 }

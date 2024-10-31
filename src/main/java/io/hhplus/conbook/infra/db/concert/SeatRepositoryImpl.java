@@ -32,6 +32,14 @@ public class SeatRepositoryImpl implements SeatRepository {
     }
 
     @Override
+    public Seat findSeatBy(long seatId, long scheduleId) {
+
+        return seatJpaRepository.findBy(seatId, scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.SEAT_NOT_FOUND.getCode()))
+                .toDomainWithoutSchedule();
+    }
+
+    @Override
     @Transactional
     public void updateStatus(Seat seat) {
         seatJpaRepository.save(new SeatEntity(seat));
