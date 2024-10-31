@@ -10,3 +10,6 @@ CMD ["redis-server"]
 
 # docker container run
 #docker run --name simple-redis -d -p 6379:6379 simple-redis
+
+# redis cli access
+#docker exec -it {redisName} redis-cli
