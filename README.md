@@ -40,4 +40,7 @@
 **Refer to**
 - [시나리오 요구사항 분석](./docs/README_ANALYSIS.md)
 - [프로젝트 설계](./docs/README_DESIGN.md)
+- [서버 API](./docs/README_SWAGGER.md)
+- [서버 구축 회고](./docs/README_MEMOIR.md)
+- [동시성 이슈 분석 및 해결방법](./docs/README_CONCURRENCY.md)
 <br>
