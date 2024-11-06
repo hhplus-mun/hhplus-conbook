@@ -1,7 +1,7 @@
 package io.hhplus.conbook.infra.db.token;
 
-import io.hhplus.conbook.domain.token.ItemStatus;
-import io.hhplus.conbook.domain.token.TokenQueueItem;
+import io.hhplus.conbook.domain.token.TokenStatus;
+import io.hhplus.conbook.domain.token.Token;
 import io.hhplus.conbook.infra.db.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,13 +10,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Table(name = "token_queue_item")
+@Table(name = "token")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class TokenQueueItemEntity {
+public class TokenEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "token_queue_id")
@@ -27,7 +27,7 @@ public class TokenQueueItemEntity {
     private UserEntity user;
 
     @Enumerated(EnumType.STRING)
-    private ItemStatus status;
+    private TokenStatus status;
 
     private Integer position;
 
@@ -35,10 +35,10 @@ public class TokenQueueItemEntity {
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
 
-    public TokenQueueItem toDomain() {
-        return new TokenQueueItem(
+    public Token toDomain() {
+        return new Token(
                 id,
-                tokenQueue.toDomainWithoutItems(),
+                tokenQueue.toDomainWithoutTokens(),
                 user.toDomain(),
                 status,
                 position,
@@ -47,15 +47,14 @@ public class TokenQueueItemEntity {
         );
     }
 
-    public TokenQueueItemEntity(TokenQueueItem tokenQueueItem) {
-        this.id = tokenQueueItem.getId();
-        this.status = tokenQueueItem.getStatus();
-        this.position = tokenQueueItem.getPosition();
-        this.createdAt = tokenQueueItem.getCreatedAt();
-        this.expiredAt = tokenQueueItem.getExpiredAt();
+    public TokenEntity(Token token) {
+        this.id = token.getId();
+        this.status = token.getStatus();
+        this.position = token.getPosition();
+        this.createdAt = token.getCreatedAt();
+        this.expiredAt = token.getExpiredAt();
 
-
-        this.tokenQueue = new TokenQueueEntity(tokenQueueItem.getQueue());
-        this.user = new UserEntity(tokenQueueItem.getUser());
+        this.tokenQueue = new TokenQueueEntity(token.getQueue());
+        this.user = new UserEntity(token.getUser());
     }
 }

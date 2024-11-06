@@ -1,10 +1,10 @@
 package io.hhplus.conbook.config;
 
 import io.hhplus.conbook.domain.booking.BookingService;
-import io.hhplus.conbook.domain.token.ItemStatus;
+import io.hhplus.conbook.domain.token.Token;
 import io.hhplus.conbook.domain.token.TokenManager;
 import io.hhplus.conbook.domain.token.TokenQueue;
-import io.hhplus.conbook.domain.token.TokenQueueItem;
+import io.hhplus.conbook.domain.token.TokenStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
@@ -39,16 +39,16 @@ public class ScheduledTaskExecutor {
     @Scheduled(fixedDelay = TOKEN_CHECKER_INTERVAL)
     public void updateQueueList() {
         for (TokenQueue queue : tokenManager.getTokenQueueListWithItems()) {
-            Map<ItemStatus, List<TokenQueueItem>> tokenGroup = queue.getQueueItems().stream()
-                    .collect(Collectors.groupingBy(TokenQueueItem::getStatus));
+            Map<TokenStatus, List<Token>> tokenGroup = queue.getTokens().stream()
+                    .collect(Collectors.groupingBy(Token::getStatus));
 
-            List<TokenQueueItem> waitingItems = tokenGroup.getOrDefault(ItemStatus.WAITING, new ArrayList<>());
-            List<TokenQueueItem> passedItems = tokenGroup.getOrDefault(ItemStatus.PASSED, new ArrayList<>());
+            List<Token> waitingItems = tokenGroup.getOrDefault(TokenStatus.WAITING, new ArrayList<>());
+            List<Token> passedItems = tokenGroup.getOrDefault(TokenStatus.PASSED, new ArrayList<>());
 
-            if (passedItems.size() == 0) continue;
+            if (passedItems.isEmpty()) continue;
 
-            List<TokenQueueItem> expiredTokens = new ArrayList<>();
-            for (TokenQueueItem passedItem : passedItems) {
+            List<Token> expiredTokens = new ArrayList<>();
+            for (Token passedItem : passedItems) {
                 if (LocalDateTime.now().isAfter(passedItem.getExpiredAt())) {
                     expiredTokens.add(passedItem);
                 }

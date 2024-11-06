@@ -1,5 +1,5 @@
 package io.hhplus.conbook.domain.token;
 
-public enum ItemStatus {
+public enum TokenStatus {
     WAITING, PASSED
 }

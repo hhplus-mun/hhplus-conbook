@@ -1,7 +1,7 @@
 package io.hhplus.conbook.infra.db.token;
 
+import io.hhplus.conbook.domain.token.Token;
 import io.hhplus.conbook.domain.token.TokenQueue;
-import io.hhplus.conbook.domain.token.TokenQueueItem;
 import io.hhplus.conbook.infra.db.concert.ConcertEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -26,7 +26,7 @@ public class TokenQueueEntity {
     private int accessCapacity;
 
     @OneToMany(mappedBy = "tokenQueue", cascade = CascadeType.ALL)
-    List<TokenQueueItemEntity> queueItems = new ArrayList<>();
+    List<TokenEntity> tokens = new ArrayList<>();
 
     public TokenQueueEntity(TokenQueue tokenQueue) {
         this.id = tokenQueue.getId();
@@ -34,15 +34,15 @@ public class TokenQueueEntity {
         this.concert = new ConcertEntity(tokenQueue.getConcert());
     }
 
-    public TokenQueue toDomainWithoutItems() {
+    public TokenQueue toDomainWithoutTokens() {
         return new TokenQueue(id, concert.toDomain(), accessCapacity);
     }
 
-    public TokenQueue toDomainWithItems() {
+    public TokenQueue toDomainWithTokens() {
         TokenQueue tokenQueue = new TokenQueue(id, concert.toDomain(), accessCapacity);
-        List<TokenQueueItem> queueItemList =
-                queueItems.stream().map(TokenQueueItemEntity::toDomain).toList();
-        tokenQueue.getQueueItems().addAll(queueItemList);
+        List<Token> tokenList =
+                tokens.stream().map(TokenEntity::toDomain).toList();
+        tokenQueue.getTokens().addAll(tokenList);
 
         return tokenQueue;
     }

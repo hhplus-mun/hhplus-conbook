@@ -13,7 +13,7 @@ public class TokenQueue {
     private Long id;
     private Concert concert;
     private int accessCapacity;
-    private List<TokenQueueItem> queueItems = new ArrayList<>();
+    private List<Token> tokens = new ArrayList<>();
 
     public TokenQueue(Concert concert, int accessCapacity) {
         this.concert = concert;

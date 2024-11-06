@@ -9,6 +9,6 @@ public interface TokenQueueRepository {
      */
     void addQueue(TokenQueue tokenQueue);
     TokenQueue getTokenQueue(long concertId);
-    List<TokenQueue> getQueueListWithoutItems();
-    List<TokenQueue> getQueueListWithItems();
+    List<TokenQueue> getQueueListWithoutTokens();
+    List<TokenQueue> getQueueListWithTokens();
 }

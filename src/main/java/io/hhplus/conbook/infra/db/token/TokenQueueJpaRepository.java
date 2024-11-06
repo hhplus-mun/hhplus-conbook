@@ -12,6 +12,6 @@ public interface TokenQueueJpaRepository extends JpaRepository<TokenQueueEntity,
     @EntityGraph(attributePaths = {"concert"})
     Optional<TokenQueueEntity> findByConcertId(long concertId);
 
-    @Query("select q from TokenQueueEntity q join fetch q.queueItems i")
-    List<TokenQueueEntity> findAllWithItems();
+    @Query("select q from TokenQueueEntity q join fetch q.tokens t")
+    List<TokenQueueEntity> findAllWithTokens();
 }

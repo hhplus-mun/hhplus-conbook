@@ -26,7 +26,7 @@ public class DummyDataSetup {
             return;
         }
 
-        List<TokenQueue> queueList = queueRepository.getQueueListWithoutItems();
+        List<TokenQueue> queueList = queueRepository.getQueueListWithoutTokens();
 
         // 분산서버 환경에서 최초로 띄워진 Application Server 인 경우
         if (queueList.size() == 0) {

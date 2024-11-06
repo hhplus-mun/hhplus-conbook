@@ -23,21 +23,21 @@ public class TokenQueueRepositoryImpl implements TokenQueueRepository {
     public TokenQueue getTokenQueue(long concertId) {
         return tokenQueueJpaRepository.findByConcertId(concertId)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.QUEUE_NOT_FOUND.getCode()))
-                .toDomainWithoutItems();
+                .toDomainWithoutTokens();
     }
 
     @Transactional
     @Override
-    public List<TokenQueue> getQueueListWithoutItems() {
+    public List<TokenQueue> getQueueListWithoutTokens() {
         return tokenQueueJpaRepository.findAll().stream()
-                .map(TokenQueueEntity::toDomainWithoutItems)
+                .map(TokenQueueEntity::toDomainWithoutTokens)
                 .toList();
     }
 
     @Override
-    public List<TokenQueue> getQueueListWithItems() {
-        return tokenQueueJpaRepository.findAllWithItems().stream()
-                .map(TokenQueueEntity::toDomainWithItems)
+    public List<TokenQueue> getQueueListWithTokens() {
+        return tokenQueueJpaRepository.findAllWithTokens().stream()
+                .map(TokenQueueEntity::toDomainWithTokens)
                 .toList();
     }
 }

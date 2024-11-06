@@ -6,10 +6,13 @@ import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.token.generation.TokenType;
 import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.domain.user.UserService;
+import io.hhplus.conbook.infra.db.token.TokenJpaRepository;
 import io.hhplus.conbook.infra.db.token.TokenQueueEntity;
-import io.hhplus.conbook.infra.db.token.TokenQueueItemJpaRepository;
 import io.hhplus.conbook.infra.db.token.TokenQueueJpaRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -32,7 +35,7 @@ class TokenManagerTest {
     @Autowired
     TokenQueueJpaRepository tokenQueueJpaRepository;
     @Autowired
-    TokenQueueItemJpaRepository tokenQueueItemJpaRepository;
+    TokenJpaRepository tokenJpaRepository;
 
     @Autowired
     ScheduledTaskExecutor scheduledTaskExecutor;
@@ -50,7 +53,7 @@ class TokenManagerTest {
     @AfterEach
     void clear() {
         System.out.println("토큰 대기열 초기화");
-        tokenQueueItemJpaRepository.deleteAll();
+        tokenJpaRepository.deleteAll();
     }
 
     @Test
@@ -64,7 +67,7 @@ class TokenManagerTest {
         System.out.println("---");
 
         // when
-        Token token = tokenManager.creaateToken(user, concert);
+        TokenInfo token = tokenManager.creaateToken(user, concert);
 
         assertThat(token.type()).isEqualTo(TokenType.ACCESS);
     }
@@ -99,7 +102,7 @@ class TokenManagerTest {
         tokenManager.creaateToken(user1, concert);
 
         // when
-        Token token = tokenManager.creaateToken(user2, concert);
+        TokenInfo token = tokenManager.creaateToken(user2, concert);
 
         // then
         assertThat(token.type()).isEqualTo(TokenType.WAIT);
@@ -117,7 +120,7 @@ class TokenManagerTest {
         User user2 = userService.getUser(userId2);
         Concert concert = concertService.getConcert(concertId);
         tokenManager.creaateToken(user1, concert);
-        Token token = tokenManager.creaateToken(user2, concert);
+        TokenInfo token = tokenManager.creaateToken(user2, concert);
 
         //when
         TokenStatusInfo waitingInfo = tokenManager.getWaitingStatusInfo(token.jwt());
@@ -141,7 +144,7 @@ class TokenManagerTest {
         User user2 = userService.getUser(userId2);
         Concert concert = concertService.getConcert(concertId);
         tokenManager.creaateToken(user1, concert);
-        Token token = tokenManager.creaateToken(user2, concert);
+        TokenInfo token = tokenManager.creaateToken(user2, concert);
 
         TokenQueueEntity queue = tokenQueueJpaRepository.findByConcertId(concertId).get();
         ReflectionTestUtils.setField(queue, "accessCapacity", 2);

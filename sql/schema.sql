@@ -54,7 +54,7 @@ create table token_queue (
                              primary key (token_queue_id)
 );
 
-create table token_queue_item (
+create table token (
                                   position integer,
                                   created_at datetime not null,
                                   expired_at datetime,
