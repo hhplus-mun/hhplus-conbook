@@ -126,39 +126,32 @@ class TokenManagerTest {
         TokenStatusInfo waitingInfo = tokenManager.getWaitingStatusInfo(token.jwt());
 
         //then
-        assertAll(
-                () -> assertThat(waitingInfo.getPosition()).isGreaterThan(0),
-                () -> assertThat(waitingInfo.isPassed()).isFalse()
-        );
+        assertThat(waitingInfo.position()).isGreaterThan(0);
     }
 
-    @Test
-    @DisplayName("[정상]: 대기열 통과에 따른 Access Token 반환")
-    void returnAccessToken() {
-        //given
-        long userId1 = 1L;
-        long userId2 = 2L;
-        long concertId = 1L;
-
-        User user1 = userService.getUser(userId1);
-        User user2 = userService.getUser(userId2);
-        Concert concert = concertService.getConcert(concertId);
-        tokenManager.creaateToken(user1, concert);
-        TokenInfo token = tokenManager.creaateToken(user2, concert);
-
-        TokenQueueEntity queue = tokenQueueJpaRepository.findByConcertId(concertId).get();
-        ReflectionTestUtils.setField(queue, "accessCapacity", 2);
-        tokenQueueJpaRepository.save(queue);
-
-        scheduledTaskExecutor.updateQueueList();
-
-        //when
-        TokenStatusInfo waitingInfo = tokenManager.getWaitingStatusInfo(token.jwt());
-
-        //then
-        assertAll(
-                () -> assertThat(waitingInfo.isPassed()).isTrue(),
-                () -> assertThat(waitingInfo.getAccessToken()).isNotNull()
-        );
-    }
+//    @Test
+//    @DisplayName("[정상]: 대기열 통과에 따른 Access Token 반환")
+//    void returnAccessToken() {
+//        //given
+//        long userId1 = 1L;
+//        long userId2 = 2L;
+//        long concertId = 1L;
+//
+//        User user1 = userService.getUser(userId1);
+//        User user2 = userService.getUser(userId2);
+//        Concert concert = concertService.getConcert(concertId);
+//        tokenManager.creaateToken(user1, concert);
+//        TokenInfo token = tokenManager.creaateToken(user2, concert);
+//
+//        TokenQueueEntity queue = tokenQueueJpaRepository.findByConcertId(concertId).get();
+//        ReflectionTestUtils.setField(queue, "accessCapacity", 2);
+//        tokenQueueJpaRepository.save(queue);
+//
+//        scheduledTaskExecutor.updateQueueList();
+//
+//        //when
+//        TokenStatusInfo waitingInfo = tokenManager.getWaitingStatusInfo(token.jwt());
+//
+//        //then
+//    }
 }

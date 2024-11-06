@@ -31,7 +31,7 @@ public class TokenRepositoryImpl implements TokenRepository {
     }
 
     @Override
-    public void pushItem(Token token) {
+    public void save(Token token) {
 
         tokenJpaRepository.save(new TokenEntity(token));
     }
@@ -58,6 +58,13 @@ public class TokenRepositoryImpl implements TokenRepository {
         return tokenJpaRepository.findTokenByConcertIdAndUUID(concertId, userUUID)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()))
                 .toDomain();
+    }
+
+    @Override
+    public int findPositionFor(long concertId, String userUUID) {
+        return tokenJpaRepository.findTokenByConcertIdAndUUID(concertId, userUUID)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()))
+                .getPosition();
     }
 
     @Override

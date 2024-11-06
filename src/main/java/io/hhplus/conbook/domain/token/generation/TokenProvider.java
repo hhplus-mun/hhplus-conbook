@@ -53,6 +53,7 @@ public class TokenProvider {
                 Date.from(tokenClaims.getIssuedAt().atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
+                .id(tokenClaims.getUserUUID())
                 .issuer("conbook")
                 .issuedAt(issuedAt)
                 .claims(tokenClaims.getClaimsMap())

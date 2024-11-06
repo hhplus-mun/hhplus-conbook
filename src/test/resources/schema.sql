@@ -60,7 +60,7 @@ create table token (
                                   expired_at datetime,
                                   id bigint AUTO_INCREMENT,
                                   token_queue_id bigint,
-                                  user_id bigint,
+                                  user_uuid varchar,
                                   status enum ('PASSED','WAITING'),
                                   primary key (id)
 );

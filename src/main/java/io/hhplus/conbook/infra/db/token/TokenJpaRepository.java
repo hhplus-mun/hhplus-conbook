@@ -10,21 +10,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TokenJpaRepository extends JpaRepository<TokenEntity, Integer> {
-    @EntityGraph(attributePaths = {"user", "tokenQueue"})
+    @EntityGraph(attributePaths = {"tokenQueue"})
     List<TokenEntity> findAllByTokenQueueId(Long id);
 
     @Query("""
         SELECT t FROM TokenEntity t
-        JOIN FETCH t.user u
         JOIN FETCH t.tokenQueue q
-        WHERE q.concert.id = :concertId and u.uuid = :uuid
+        WHERE q.concert.id = :concertId and t.userUUID = :uuid
     """)
     Optional<TokenEntity> findTokenByConcertIdAndUUID(@Param("concertId") long concertId, @Param("uuid") String uuid);
 
     @Query("""
         SELECT t FROM TokenEntity t
-        JOIN t.user u
-        WHERE t.tokenQueue.id = :queueId AND u.uuid = :uuid
+        WHERE t.tokenQueue.id = :queueId AND t.userUUID = :uuid
     """)
     Optional<TokenEntity> findTokenByQueueIdAndUUID(@Param("queueId") long queueId, @Param("uuid") String uuid);
 
@@ -40,5 +38,4 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Integer> 
         GROUP BY t.status
     """)
     List<TokenStatusCount> findTokenStatusCountBy(@Param("concertId") long concertId);
-
 }

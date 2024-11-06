@@ -2,7 +2,6 @@ package io.hhplus.conbook.infra.db.token;
 
 import io.hhplus.conbook.domain.token.TokenStatus;
 import io.hhplus.conbook.domain.token.Token;
-import io.hhplus.conbook.infra.db.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,9 +21,8 @@ public class TokenEntity {
     @JoinColumn(name = "token_queue_id")
     private TokenQueueEntity tokenQueue;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    @Column(name = "user_uuid")
+    private String userUUID;
 
     @Enumerated(EnumType.STRING)
     private TokenStatus status;
@@ -39,7 +37,7 @@ public class TokenEntity {
         return new Token(
                 id,
                 tokenQueue.toDomainWithoutTokens(),
-                user.toDomain(),
+                userUUID,
                 status,
                 position,
                 createdAt,
@@ -53,8 +51,7 @@ public class TokenEntity {
         this.position = token.getPosition();
         this.createdAt = token.getCreatedAt();
         this.expiredAt = token.getExpiredAt();
-
+        this.userUUID = token.getUserUUID();
         this.tokenQueue = new TokenQueueEntity(token.getQueue());
-        this.user = new UserEntity(token.getUser());
     }
 }

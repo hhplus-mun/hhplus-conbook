@@ -6,13 +6,15 @@ import java.util.Map;
 public interface TokenRepository {
     List<Token> tokenList(long concertId);
 
-    void pushItem(Token token);
+    void save(Token token);
 
     boolean existsInPass(long concertId, String userUUID);
 
     boolean existTokenFor(long queueId, String userUUID);
 
     Token findTokenBy(long concertId, String userUUID);
+
+    int findPositionFor(long concertId, String userUUID);
 
     void updateStatus(Token token);
 
@@ -21,4 +23,5 @@ public interface TokenRepository {
     void saveOrUpdate(Token token);
 
     Map<TokenStatus, Integer> getTokenCountsByStatus(long concertId);
+
 }

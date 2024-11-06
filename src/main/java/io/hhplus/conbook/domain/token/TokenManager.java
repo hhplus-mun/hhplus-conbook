@@ -43,10 +43,10 @@ public class TokenManager {
         }
 
         String jwt = tokenProvider.generateToken(customTokenClaims);
-        tokenRepository.pushItem(
+        tokenRepository.save(
                 Token.builder()
                         .queue(tokenQueue)
-                        .user(user)
+                        .userUUID(user.getUuid())
                         .status(customTokenClaims.getType().toItemStatus())
                         .position(customTokenClaims.getPosition())
                         .createdAt(customTokenClaims.getIssuedAt())
@@ -82,17 +82,9 @@ public class TokenManager {
             throw new NotValidTokenException(ErrorCode.WAITING_TOKEN_VALIDATION_FAILED.getCode());
 
         WaitPayload waitPayload = tokenProvider.extractWait(waitingToken);
-        Token token = tokenRepository.findTokenBy(waitPayload.concertId(), waitPayload.uuid());
+        int position = tokenRepository.findPositionFor(waitPayload.concertId(), waitPayload.uuid());
 
-        TokenStatusInfo tokenInfo;
-        if (token.getStatus().equals(TokenStatus.PASSED)) {
-            CustomTokenClaims customTokenClaims = CustomTokenClaims.getDefaultClaims(token.getQueue().getConcert().getId(), token.getUser().getUuid());
-            tokenInfo = new TokenStatusInfo(tokenProvider.generateToken(customTokenClaims));
-        } else {
-            tokenInfo = new TokenStatusInfo(token.getPosition());
-        }
-
-        return tokenInfo;
+        return new TokenStatusInfo(position);
     }
 
     public List<TokenQueue> getTokenQueueListWithItems() {

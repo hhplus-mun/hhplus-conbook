@@ -45,6 +45,6 @@ public class TokenController implements TokenControllerApi {
 
         TokenResult.Check checkResult = tokenFacade.checkStatus(new TokenCommand.Check(token));
 
-        return new TokenResponse.Status(checkResult.tokenStatusInfo());
+        return new TokenResponse.Status(checkResult.tokenStatusInfo().position());
     }
 }
