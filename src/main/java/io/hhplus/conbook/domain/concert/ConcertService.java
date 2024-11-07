@@ -20,6 +20,13 @@ public class ConcertService {
         return concertRepository.getConcertBy(id);
     }
 
+    public List<Long> getConcertIds() {
+        return concertRepository.getConcertList()
+                .stream()
+                .map(Concert::getId)
+                .toList();
+    }
+
     public List<ConcertSchedule> getAvailableConcertScheduleList(long concertId) {
         return scheduleRepository.findScheduleListBy(concertId)
                 .stream()

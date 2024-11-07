@@ -53,6 +53,7 @@ public class TokenProvider {
                 Date.from(tokenClaims.getIssuedAt().atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
+                .id(tokenClaims.getUserUUID())
                 .issuer("conbook")
                 .issuedAt(issuedAt)
                 .claims(tokenClaims.getClaimsMap())
@@ -95,15 +96,8 @@ public class TokenProvider {
         String concertId = (String) claims.get(CustomClaims.CONCERT);
         String uuid = (String) claims.get(CustomClaims.UUID);
         Payload payload = new Payload(parsedType, Long.parseLong(concertId), uuid);
-
-        if (parsedType.equals(TokenType.ACCESS)) {
-            LocalDateTime expiredAt = claims.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            payload.addExpiration(expiredAt);
-        }
-        else {
-            Integer position = (Integer) claims.get(CustomClaims.POSITION);
-            payload.addPosition(position);
-        }
+        LocalDateTime expiredAt = claims.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        payload.addExpiration(expiredAt);
 
         return payload;
     }

@@ -4,7 +4,7 @@ public interface CustomClaims {
     String CONCERT = "concertId";
     String UUID = "uuid";
     String TOKEN_TYPE = "type";
-    String POSITION = "position";
 
-    int EXPIRATION_MIN = 10;
+    long ACCESS_EXPIRATION_MIN = 15;
+    long WAITING_EXPIRATION_MIN = 10;
 }

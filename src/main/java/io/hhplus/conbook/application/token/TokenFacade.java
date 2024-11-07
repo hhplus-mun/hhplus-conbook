@@ -2,7 +2,7 @@ package io.hhplus.conbook.application.token;
 
 import io.hhplus.conbook.domain.concert.Concert;
 import io.hhplus.conbook.domain.concert.ConcertService;
-import io.hhplus.conbook.domain.token.Token;
+import io.hhplus.conbook.domain.token.TokenInfo;
 import io.hhplus.conbook.domain.token.TokenStatusInfo;
 import io.hhplus.conbook.domain.token.TokenManager;
 import io.hhplus.conbook.domain.user.User;
@@ -21,7 +21,7 @@ public class TokenFacade {
     public TokenResult.Access getAccessToken(TokenCommand.Access command) {
         User user = userService.getUser(command.userId());
         Concert concert = concertService.getConcert(command.concertId());
-        Token token = tokenManager.creaateToken(user, concert);
+        TokenInfo token = tokenManager.creaateToken(user, concert);
 
         return new TokenResult.Access(token.jwt(), token.type());
     }

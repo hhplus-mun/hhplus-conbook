@@ -1,15 +1,15 @@
 package io.hhplus.conbook.domain.token.generation;
 
-import io.hhplus.conbook.domain.token.ItemStatus;
+import io.hhplus.conbook.domain.token.TokenStatus;
 
 public enum TokenType {
     ACCESS, WAIT;
 
-    public ItemStatus toItemStatus() {
+    public TokenStatus toItemStatus() {
         if (this.equals(ACCESS)) {
-            return ItemStatus.PASSED;
+            return TokenStatus.PASSED;
         } else {
-            return ItemStatus.WAITING;
+            return TokenStatus.WAITING;
         }
     }
 }

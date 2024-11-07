@@ -26,12 +26,14 @@ public class BookingController implements BookingControllerApi {
     @PostMapping("/{id}/payment")
     public BookingResponse.Payment payment(
             @PathVariable long id,
+            @RequestAttribute(name = CustomAttribute.JWT) String jwt,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String uuid,
             @RequestAttribute(name = CustomAttribute.CONCERT_ID) long concertId
     ) {
         BookingPaymentResult.Paid result =
                 bookingPaymentFacade.processPayment(
                         BookingPaymentCommand.Paid.builder()
+                                .jwt(jwt)
                                 .bookingId(id)
                                 .concertId(concertId)
                                 .userUUID(uuid)

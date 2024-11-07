@@ -35,7 +35,7 @@ public class BookingPaymentFacade {
         pointService.spendPoint(user.getId(), booking.getBookingPrice(), paid.reqTime());
 
         Payment payment = paymentService.savePaymentHistory(booking, user);
-        tokenManager.expireAccessRight(paid.concertId(), paid.userUUID());
+        tokenManager.expireAccessRight(paid.concertId(), paid.jwt());
 
         return new BookingPaymentResult.Paid(booking.getId(), payment.getAmount(), payment.getPaidAt());
     }
