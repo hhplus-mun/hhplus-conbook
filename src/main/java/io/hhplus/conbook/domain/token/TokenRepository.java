@@ -4,23 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 public interface TokenRepository {
-    List<Token> tokenList(long concertId);
-
     void save(Token token);
 
-    boolean existsInPass(long concertId, String userUUID);
+    void savePassedAll(List<Token> convertingTargets);
+
+    boolean existsInPass(long concertId, String accessToken);
 
     boolean existTokenFor(long queueId, String userUUID);
 
-    Token findTokenBy(long concertId, String userUUID);
+//    Token findAccessTokenBy(long concertId, String accessToken);
 
-    int findPositionFor(long concertId, String userUUID);
+    int findPositionFor(long concertId, String waitingToken);
 
-    void updateStatus(Token token);
-
-    void remove(Token tokenItem);
-
-    void saveOrUpdate(Token token);
+    void remove(long concertId, String tokenValue);
 
     Map<TokenStatus, Integer> getTokenCountsByStatus(long concertId);
 

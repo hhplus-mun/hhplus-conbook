@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.hhplus.conbook.config.ScheduledTaskExecutor.TOKEN_CHECKER_INTERVAL;
-
 @Getter
 public class CustomTokenClaims implements CustomClaims {
     private long concertId;
@@ -55,7 +53,7 @@ public class CustomTokenClaims implements CustomClaims {
         if (type.equals(TokenType.WAIT)) claimsMap.put(POSITION, position);
         else {
             expiredAt = issuedAt.plusMinutes(EXPIRATION_MIN);
-            Date expiration = Date.from(expiredAt.plusMinutes(TOKEN_CHECKER_INTERVAL / 60000).atZone(ZoneId.systemDefault()).toInstant());
+            Date expiration = Date.from(expiredAt.atZone(ZoneId.systemDefault()).toInstant());
             claimsMap.put(Claims.EXPIRATION, expiration);
         }
 

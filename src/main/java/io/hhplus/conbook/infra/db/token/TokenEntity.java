@@ -1,7 +1,7 @@
 package io.hhplus.conbook.infra.db.token;
 
-import io.hhplus.conbook.domain.token.TokenStatus;
 import io.hhplus.conbook.domain.token.Token;
+import io.hhplus.conbook.domain.token.TokenStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,11 +27,12 @@ public class TokenEntity {
     @Enumerated(EnumType.STRING)
     private TokenStatus status;
 
-    private Integer position;
-
     @Column(updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
+
+    @Column(nullable = false)
+    private String tokenValue;
 
     public Token toDomain() {
         return new Token(
@@ -39,19 +40,19 @@ public class TokenEntity {
                 tokenQueue.toDomainWithoutTokens(),
                 userUUID,
                 status,
-                position,
                 createdAt,
-                expiredAt
+                expiredAt,
+                tokenValue
         );
     }
 
     public TokenEntity(Token token) {
         this.id = token.getId();
+        this.tokenQueue = new TokenQueueEntity(token.getQueue());
         this.status = token.getStatus();
-        this.position = token.getPosition();
         this.createdAt = token.getCreatedAt();
         this.expiredAt = token.getExpiredAt();
         this.userUUID = token.getUserUUID();
-        this.tokenQueue = new TokenQueueEntity(token.getQueue());
+        this.tokenValue = token.getTokenValue();
     }
 }

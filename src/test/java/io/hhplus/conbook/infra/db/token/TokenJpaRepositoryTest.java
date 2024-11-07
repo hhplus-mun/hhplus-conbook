@@ -2,6 +2,7 @@ package io.hhplus.conbook.infra.db.token;
 
 import io.hhplus.conbook.domain.token.Token;
 import io.hhplus.conbook.domain.token.TokenStatusCount;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,8 @@ class TokenJpaRepositoryTest {
 
     @Test
     @DisplayName("[정상]: JPA 쿼리 확인 - 토큰 조회")
-    void findTokenByConcertIdAndUUID() {
-        tokenJpaRepository.findTokenByConcertIdAndUUID(1L, "fdkfjakdsfs");
+    void findTokenByConcertIdAndTokenValue() {
+        tokenJpaRepository.findTokenByConcertIdAndTokenValue(1L, "fdkfjakdsfs");
     }
 
     @Test
@@ -50,5 +51,18 @@ class TokenJpaRepositoryTest {
         for (TokenStatusCount tokenStatusCount : tokenStatusCounts) {
             System.out.println("tokenStatusCount = " + tokenStatusCount);
         }
+    }
+    
+    @Test
+    @DisplayName("[정상]: JPA 쿼리 확인 - 대기열 토큰 순위 확인")
+    void findWaitingTokenRank() {
+        tokenJpaRepository.findWaitingTokenList(1L);
+    }
+    
+    @Test
+    @DisplayName("[정상]: JPA 쿼리 확인 - 토큰 삭제 확인")
+    @Transactional
+    void delete() {
+        tokenJpaRepository.deleteBy(1L, "test");
     }
 }

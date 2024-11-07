@@ -3,6 +3,7 @@ package io.hhplus.conbook.infra.db.token;
 import io.hhplus.conbook.domain.token.TokenStatusCount;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,9 +17,9 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Integer> 
     @Query("""
         SELECT t FROM TokenEntity t
         JOIN FETCH t.tokenQueue q
-        WHERE q.concert.id = :concertId and t.userUUID = :uuid
+        WHERE q.concert.id = :concertId and t.tokenValue = :tokenValue
     """)
-    Optional<TokenEntity> findTokenByConcertIdAndUUID(@Param("concertId") long concertId, @Param("uuid") String uuid);
+    Optional<TokenEntity> findTokenByConcertIdAndTokenValue(@Param("concertId") long concertId, @Param("tokenValue") String tokenValue);
 
     @Query("""
         SELECT t FROM TokenEntity t
@@ -38,4 +39,11 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Integer> 
         GROUP BY t.status
     """)
     List<TokenStatusCount> findTokenStatusCountBy(@Param("concertId") long concertId);
+
+    @Query("SELECT t.tokenValue FROM TokenEntity t JOIN t.tokenQueue q WHERE q.concert.id = :concertId ORDER BY t.createdAt ASC")
+    List<String> findWaitingTokenList(@Param("concertId") long concertId);
+
+    @Query("DELETE FROM TokenEntity t WHERE t.tokenQueue.concert.id = :concertId AND t.tokenValue = :tokenValue")
+    @Modifying
+    void deleteBy(@Param("concertId") long concertId, @Param("tokenValue") String tokenValue);
 }

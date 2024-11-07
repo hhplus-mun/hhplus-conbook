@@ -8,4 +8,5 @@ package io.hhplus.conbook.interfaces.filter;
 public interface CustomAttribute {
     String CONCERT_ID = "tokenConcertId";
     String USER_UUID = "tokenUserUUID";
+    String JWT = "tokenValue";
 }

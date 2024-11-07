@@ -52,6 +52,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     && !isValidConcertAccess(requestURI, tokenInfo.concertId()))
                 throw new AccessDeniedException(ErrorCode.CONCERT_UNAUTHORIZED_ACCESS.getCode());
 
+            request.setAttribute(CustomAttribute.JWT, token);
             request.setAttribute(CustomAttribute.CONCERT_ID, tokenInfo.concertId());
             request.setAttribute(CustomAttribute.USER_UUID, tokenInfo.uuid());
         }

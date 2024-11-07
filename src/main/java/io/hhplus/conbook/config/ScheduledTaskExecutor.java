@@ -54,9 +54,9 @@ public class ScheduledTaskExecutor {
                 }
             }
 
-            tokenManager.removeExpiredAccessToken(expiredTokens);
+            tokenManager.removeExpiredAccessToken(queue.getConcert().getId(), expiredTokens);
             int availableAccess = queue.getAccessCapacity() - (passedItems.size() - expiredTokens.size());
-            tokenManager.convertToPass(waitingItems, availableAccess);
+            if (availableAccess > 0) tokenManager.convertToPass(waitingItems, availableAccess);
         }
     }
 

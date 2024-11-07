@@ -16,30 +16,33 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TokenRepositoryImpl implements TokenRepository {
 
-    private final TokenQueueJpaRepository tokenQueueJpaRepository;
     private final TokenJpaRepository tokenJpaRepository;
 
-    @Override
-    public List<Token> tokenList(long concertId) {
-        TokenQueueEntity tokenQueue = tokenQueueJpaRepository.findByConcertId(concertId)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.QUEUE_NOT_FOUND.getCode()));
-
-        return tokenJpaRepository.findAllByTokenQueueId(tokenQueue.getId())
-                .stream()
-                .map(TokenEntity::toDomain)
-                .toList();
-    }
+//    @Override
+//    public List<Token> tokenList(long concertId) {
+//        TokenQueueEntity tokenQueue = tokenQueueJpaRepository.findByConcertId(concertId)
+//                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.QUEUE_NOT_FOUND.getCode()));
+//
+//        return tokenJpaRepository.findAllByTokenQueueId(tokenQueue.getId())
+//                .stream()
+//                .map(TokenEntity::toDomain)
+//                .toList();
+//    }
 
     @Override
     public void save(Token token) {
-
         tokenJpaRepository.save(new TokenEntity(token));
     }
 
     @Override
-    public boolean existsInPass(long concertId, String userUUID) {
+    public void savePassedAll(List<Token> tokenList) {
+        tokenJpaRepository.saveAll(tokenList.stream().map(TokenEntity::new).toList());
+    }
+
+    @Override
+    public boolean existsInPass(long concertId, String accessToken) {
         TokenEntity item =
-                tokenJpaRepository.findTokenByConcertIdAndUUID(concertId, userUUID)
+                tokenJpaRepository.findTokenByConcertIdAndTokenValue(concertId, accessToken)
                         .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()));
 
         return item.getStatus().equals(TokenStatus.PASSED);
@@ -52,34 +55,23 @@ public class TokenRepositoryImpl implements TokenRepository {
                 .isPresent();
     }
 
-    @Override
-    public Token findTokenBy(long concertId, String userUUID) {
+//    @Override
+//    public Token findAccessTokenBy(long concertId, String accessToken) {
+//
+//        return tokenJpaRepository.findTokenByConcertIdAndTokenValue(concertId, accessToken)
+//                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()))
+//                .toDomain();
+//    }
 
-        return tokenJpaRepository.findTokenByConcertIdAndUUID(concertId, userUUID)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()))
-                .toDomain();
+    @Override
+    public int findPositionFor(long concertId, String waitingToken) {
+        return tokenJpaRepository.findWaitingTokenList(concertId)
+                .indexOf(waitingToken);
     }
 
     @Override
-    public int findPositionFor(long concertId, String userUUID) {
-        return tokenJpaRepository.findTokenByConcertIdAndUUID(concertId, userUUID)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()))
-                .getPosition();
-    }
-
-    @Override
-    public void updateStatus(Token token) {
-        tokenJpaRepository.save(new TokenEntity(token));
-    }
-
-    @Override
-    public void remove(Token item) {
-        tokenJpaRepository.delete(new TokenEntity(item));
-    }
-
-    @Override
-    public void saveOrUpdate(Token token) {
-        tokenJpaRepository.save(new TokenEntity(token));
+    public void remove(long concertId, String tokenValue) {
+        tokenJpaRepository.deleteBy(concertId, tokenValue);
     }
 
     @Override

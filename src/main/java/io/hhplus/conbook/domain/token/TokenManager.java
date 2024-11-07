@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class TokenManager {
 
     private final TokenQueueRepository queueRepository;
     private final TokenRepository tokenRepository;
+    private final TokenHistoryRepository tokenHistoryRepository;
     private final TokenProvider tokenProvider;
 
     /**
@@ -31,7 +33,8 @@ public class TokenManager {
     public TokenInfo creaateToken(User user, Concert concert) {
         TokenQueue tokenQueue = queueRepository.getTokenQueue(concert.getId());
 
-        if (tokenRepository.existTokenFor(tokenQueue.getId(), user.getUuid()))
+        // to check history
+        if (tokenHistoryRepository.hasValidTokenHisoryFor(tokenQueue.getId(), user.getUuid()))
             throw new IllegalStateException(ErrorCode.TOKEN_ALREADY_EXIST.getCode());
 
         CustomTokenClaims customTokenClaims = CustomTokenClaims.getDefaultClaims(concert.getId(), user.getUuid());
@@ -43,16 +46,17 @@ public class TokenManager {
         }
 
         String jwt = tokenProvider.generateToken(customTokenClaims);
+
         tokenRepository.save(
                 Token.builder()
                         .queue(tokenQueue)
                         .userUUID(user.getUuid())
                         .status(customTokenClaims.getType().toItemStatus())
-                        .position(customTokenClaims.getPosition())
                         .createdAt(customTokenClaims.getIssuedAt())
                         .expiredAt(customTokenClaims.getExpiredAt())
                         .build()
         );
+        tokenHistoryRepository.save(new TokenHistory(concert, user.getUuid(), customTokenClaims.getType()));
 
         return new TokenInfo(jwt, customTokenClaims.getType());
     }
@@ -82,7 +86,7 @@ public class TokenManager {
             throw new NotValidTokenException(ErrorCode.WAITING_TOKEN_VALIDATION_FAILED.getCode());
 
         WaitPayload waitPayload = tokenProvider.extractWait(waitingToken);
-        int position = tokenRepository.findPositionFor(waitPayload.concertId(), waitPayload.uuid());
+        int position = tokenRepository.findPositionFor(waitPayload.concertId(), waitingToken);
 
         return new TokenStatusInfo(position);
     }
@@ -91,43 +95,36 @@ public class TokenManager {
         return queueRepository.getQueueListWithTokens();
     }
 
-    // TODO: for-loop를 활용해서 token을 delete하지만 bulk delete를 활용할 수 있도록 추후 리팩토링
-    @Transactional
-    public void removeExpiredAccessToken(List<Token> expiredTokens) {
-        for (Token tokenItem : expiredTokens) {
-            tokenRepository.remove(tokenItem);
-        }
-    }
-
     // TODO: for-loop를 활용해서 token 상태를 update하지만 bulk update를 활용할 수 있도록 추후 리팩토링
     @Transactional
     public void convertToPass(List<Token> waitingItems, int count) {
-        waitingItems.sort(Comparator.comparing(Token::getPosition));
+        waitingItems.sort(Comparator.comparing(Token::getCreatedAt));
 
+        List<Token> convertingTargets = new ArrayList<>();
         for(int i=0; i<count; i++) {
             if (waitingItems.isEmpty()) return;
 
             Token token = waitingItems.remove(0);
-            token.switchStatusToPass();
+            CustomTokenClaims claims = CustomTokenClaims.getDefaultClaims(token.getQueue().getConcert().getId(), token.getUserUUID());
+            String jwt = tokenProvider.generateToken(claims);
+            Token renewalToken = new Token(token.getQueue(), token.getUserUUID(), TokenStatus.PASSED, claims.getIssuedAt(), claims.getExpiredAt());
+            renewalToken.issuedAs(jwt);
 
-            tokenRepository.updateStatus(token);
+            convertingTargets.add(renewalToken);
         }
+        tokenRepository.savePassedAll(convertingTargets);
 
-        if(!waitingItems.isEmpty()) {
-            int position = 1;
-            for (Token waitingItem : waitingItems) {
-                waitingItem.changePosition(position++);
-                tokenRepository.updateStatus(waitingItem);
-            }
-        }
     }
 
-    // TODO: expire 처리 후 DB상에서는 유효성이 사라지나 filter에서는 아직 사용가능 -> 만료처리할 수 있도록 수정
     @Transactional
-    public void expireAccessRight(long concertId, String userUUID) {
-        Token tokenItem = tokenRepository.findTokenBy(concertId, userUUID);
-        tokenItem.expire();
-
-        tokenRepository.saveOrUpdate(tokenItem);
+    public void expireAccessRight(long concertId, String accessTokoen) {
+        tokenRepository.remove(concertId, accessTokoen);
     }
-}
+
+    // TODO: for-loop를 활용해서 token을 delete하지만 bulk delete를 활용할 수 있도록 추후 리팩토링
+    @Transactional
+    public void removeExpiredAccessToken(long concertId, List<Token> expiredTokens) {
+        for (Token token : expiredTokens) {
+            tokenRepository.remove(concertId, token.getTokenValue());
+        }
+    }}
