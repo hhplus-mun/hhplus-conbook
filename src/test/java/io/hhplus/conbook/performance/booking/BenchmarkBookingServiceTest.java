@@ -1,4 +1,4 @@
-package io.hhplus.conbook.domain.booking.performance;
+package io.hhplus.conbook.performance.booking;
 
 import io.hhplus.conbook.domain.booking.AlreadyOccupiedException;
 import io.hhplus.conbook.domain.booking.BookingRepository;
