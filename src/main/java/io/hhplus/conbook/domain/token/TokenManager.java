@@ -45,6 +45,7 @@ public class TokenManager {
 
         tokenRepository.save(
                 Token.builder()
+                        .concertId(concert.getId())
                         .userUUID(user.getUuid())
                         .status(customTokenClaims.getType().toItemStatus())
                         .createdAt(customTokenClaims.getIssuedAt())
@@ -106,7 +107,7 @@ public class TokenManager {
 
             convertingTargets.add(renewalToken);
         }
-        tokenRepository.savePassedAll(convertingTargets);
+        if (!convertingTargets.isEmpty()) tokenRepository.savePassedAll(convertingTargets);
     }
 
     @Transactional

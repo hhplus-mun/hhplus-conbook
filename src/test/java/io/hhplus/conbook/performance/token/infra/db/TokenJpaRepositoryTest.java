@@ -24,7 +24,7 @@ class TokenJpaRepositoryTest {
     @Test
     @DisplayName("[정상]: JPA 쿼리 확인 - 토큰 목록 조회")
     void findAllByTokenQueueId() {
-        List<TokenEntity> tokenEntityList = tokenJpaRepository.findAllByTokenQueueId(1L);
+        List<TokenEntity> tokenEntityList = tokenJpaRepository.findAllByConcertId(1L);
 
         List<Token> tokenList = tokenEntityList.stream()
                 .map(TokenEntity::toDomain)

@@ -68,7 +68,7 @@ public class TokenRepositoryImpl implements TokenRepository {
     @Override
     public List<String> findAccessTokensOrderByCreatedAt(long concertId, long availableCapacity) {
 
-        return tokenJpaRepository.findAllByConcertId(concertId)
+        return tokenJpaRepository.findAllValuesByConcertId(concertId)
                 .stream()
                 .limit(availableCapacity)
                 .toList();

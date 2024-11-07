@@ -23,7 +23,6 @@ public class TokenEntity {
     private LocalDateTime createdAt;
     private LocalDateTime expiredAt;
 
-    @Column(nullable = false)
     private String tokenValue;
 
     public TokenEntity() {}
