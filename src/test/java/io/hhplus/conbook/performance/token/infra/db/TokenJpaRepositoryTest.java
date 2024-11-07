@@ -1,4 +1,4 @@
-package io.hhplus.conbook.infra.db.token;
+package io.hhplus.conbook.performance.token.infra.db;
 
 import io.hhplus.conbook.domain.token.Token;
 import io.hhplus.conbook.domain.token.TokenStatusCount;
@@ -65,4 +65,5 @@ class TokenJpaRepositoryTest {
     void delete() {
         tokenJpaRepository.deleteBy(1L, "test");
     }
+
 }

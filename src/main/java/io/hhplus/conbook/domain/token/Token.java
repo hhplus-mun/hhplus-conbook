@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class Token {
     private Integer id;
-    private TokenQueue queue;
+    private Long concertId;
     private String userUUID;
     private TokenStatus status;
     private LocalDateTime createdAt;
@@ -18,8 +18,8 @@ public class Token {
     private String tokenValue;
 
     @Builder
-    public Token(TokenQueue queue, String userUUID, TokenStatus status, LocalDateTime createdAt, LocalDateTime expiredAt) {
-        this.queue = queue;
+    public Token(Long concertId, String userUUID, TokenStatus status, LocalDateTime createdAt, LocalDateTime expiredAt) {
+        this.concertId = concertId;
         this.userUUID = userUUID;
         this.status = status;
         this.createdAt = createdAt;

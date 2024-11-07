@@ -64,7 +64,6 @@ class TokenProviderTest {
         String userUUID = UUID.randomUUID().toString();
         CustomTokenClaims tokenClaims = CustomTokenClaims.getDefaultClaims(concertId, userUUID);
         tokenClaims.changeType(TokenType.WAIT);
-        tokenClaims.addPosition(1);
 
         // when
         String jwt = tokenProvider.generateToken(tokenClaims);
@@ -76,13 +75,11 @@ class TokenProviderTest {
         String concertIdByToken = (String) payload.get(CustomClaims.CONCERT);
         String uuid = (String) payload.get(CustomClaims.UUID);
         String tokenType = (String) payload.get(CustomClaims.TOKEN_TYPE);
-        Integer position = (Integer) payload.get(CustomClaims.POSITION);
         Date expiration = payload.getExpiration();
 
         assertThat(Long.parseLong(concertIdByToken)).isEqualTo(tokenClaims.getConcertId());
         assertThat(uuid).isEqualTo(tokenClaims.getUserUUID());
         assertThat(tokenType).isEqualTo(TokenType.WAIT.toString());
-        assertThat(position).isEqualTo(1);
         assertThat(expiration).isNull();
     }
 }

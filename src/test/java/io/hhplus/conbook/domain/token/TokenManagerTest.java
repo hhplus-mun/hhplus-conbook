@@ -6,9 +6,7 @@ import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.token.generation.TokenType;
 import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.domain.user.UserService;
-import io.hhplus.conbook.infra.db.token.TokenJpaRepository;
-import io.hhplus.conbook.infra.db.token.TokenQueueEntity;
-import io.hhplus.conbook.infra.db.token.TokenQueueJpaRepository;
+import io.hhplus.conbook.performance.token.infra.db.TokenJpaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,8 +31,6 @@ class TokenManagerTest {
     @Autowired
     ConcertService concertService;
     @Autowired
-    TokenQueueJpaRepository tokenQueueJpaRepository;
-    @Autowired
     TokenJpaRepository tokenJpaRepository;
 
     @Autowired
@@ -45,9 +41,9 @@ class TokenManagerTest {
         System.out.println("콘서트 대기열 접근 허용 수 설정: 1");
         long concertId = 1L;
 
-        TokenQueueEntity queue = tokenQueueJpaRepository.findByConcertId(concertId).get();
-        ReflectionTestUtils.setField(queue, "accessCapacity", 1);
-        tokenQueueJpaRepository.save(queue);
+//        TokenQueueEntity queue = tokenQueueJpaRepository.findByConcertId(concertId).get();
+//        ReflectionTestUtils.setField(queue, "accessCapacity", 1);
+//        tokenQueueJpaRepository.save(queue);
     }
 
     @AfterEach

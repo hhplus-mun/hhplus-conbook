@@ -1,5 +1,6 @@
-package io.hhplus.conbook.infra.db.token;
+package io.hhplus.conbook.performance.token.infra.db;
 
+import io.hhplus.conbook.domain.token.TokenStatus;
 import io.hhplus.conbook.domain.token.TokenStatusCount;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -46,4 +47,22 @@ public interface TokenJpaRepository extends JpaRepository<TokenEntity, Integer> 
     @Query("DELETE FROM TokenEntity t WHERE t.tokenQueue.concert.id = :concertId AND t.tokenValue = :tokenValue")
     @Modifying
     void deleteBy(@Param("concertId") long concertId, @Param("tokenValue") String tokenValue);
+
+    @Query("SELECT t.tokenValue FROM TokenEntity t JOIN t.tokenQueue q WHERE q.concert.id = :concertId ORDER BY t.createdAt ASC")
+    List<String> findAllByConcertId(long concertId);
+
+    @Modifying
+    @Query("""
+        DELETE FROM TokenEntity t
+        WHERE
+            t.tokenQueue.concert.id = :concertId
+        AND
+            t.status = :status
+        AND
+            t.expiredAt < NOW()
+    """)
+    void removeNonValidTokenBy(
+            @Param("concertId") Long concertId,
+            @Param("status") TokenStatus status
+    );
 }

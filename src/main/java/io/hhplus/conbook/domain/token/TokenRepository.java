@@ -10,14 +10,13 @@ public interface TokenRepository {
 
     boolean existsInPass(long concertId, String accessToken);
 
-    boolean existTokenFor(long queueId, String userUUID);
-
-//    Token findAccessTokenBy(long concertId, String accessToken);
-
     int findPositionFor(long concertId, String waitingToken);
 
     void remove(long concertId, String tokenValue);
 
-    Map<TokenStatus, Integer> getTokenCountsByStatus(long concertId);
+    Map<TokenStatus, Long> getTokenCountsByStatus(long concertId);
 
+    List<String> findAccessTokensOrderByCreatedAt(long concertId, long availableCapacity);
+
+    void removeNonValidTokens(Long concertId);
 }

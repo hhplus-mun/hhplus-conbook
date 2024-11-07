@@ -1,26 +1,18 @@
-package io.hhplus.conbook.infra.db.token;
+package io.hhplus.conbook.performance.token.infra.db;
 
 import io.hhplus.conbook.domain.token.Token;
 import io.hhplus.conbook.domain.token.TokenStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Table(name = "token")
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class TokenEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "token_queue_id")
-    private TokenQueueEntity tokenQueue;
-
+    private Long concertId;
     @Column(name = "user_uuid")
     private String userUUID;
 
@@ -34,10 +26,22 @@ public class TokenEntity {
     @Column(nullable = false)
     private String tokenValue;
 
+    public TokenEntity() {}
+
+    public TokenEntity(Token token) {
+        this.id = token.getId();
+        this.concertId = token.getConcertId();
+        this.status = token.getStatus();
+        this.createdAt = token.getCreatedAt();
+        this.expiredAt = token.getExpiredAt();
+        this.userUUID = token.getUserUUID();
+        this.tokenValue = token.getTokenValue();
+    }
+
     public Token toDomain() {
         return new Token(
                 id,
-                tokenQueue.toDomainWithoutTokens(),
+                concertId,
                 userUUID,
                 status,
                 createdAt,
@@ -46,13 +50,7 @@ public class TokenEntity {
         );
     }
 
-    public TokenEntity(Token token) {
-        this.id = token.getId();
-        this.tokenQueue = new TokenQueueEntity(token.getQueue());
-        this.status = token.getStatus();
-        this.createdAt = token.getCreatedAt();
-        this.expiredAt = token.getExpiredAt();
-        this.userUUID = token.getUserUUID();
-        this.tokenValue = token.getTokenValue();
+    public TokenStatus getStatus() {
+        return status;
     }
 }

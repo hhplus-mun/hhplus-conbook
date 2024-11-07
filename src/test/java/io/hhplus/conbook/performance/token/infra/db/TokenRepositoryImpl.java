@@ -1,33 +1,28 @@
-package io.hhplus.conbook.infra.db.token;
+package io.hhplus.conbook.performance.token.infra.db;
 
 import io.hhplus.conbook.domain.token.Token;
 import io.hhplus.conbook.domain.token.TokenRepository;
 import io.hhplus.conbook.domain.token.TokenStatus;
 import io.hhplus.conbook.domain.token.TokenStatusCount;
 import io.hhplus.conbook.interfaces.api.ErrorCode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Repository
-@RequiredArgsConstructor
 public class TokenRepositoryImpl implements TokenRepository {
 
     private final TokenJpaRepository tokenJpaRepository;
 
-//    @Override
-//    public List<Token> tokenList(long concertId) {
-//        TokenQueueEntity tokenQueue = tokenQueueJpaRepository.findByConcertId(concertId)
-//                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.QUEUE_NOT_FOUND.getCode()));
-//
-//        return tokenJpaRepository.findAllByTokenQueueId(tokenQueue.getId())
-//                .stream()
-//                .map(TokenEntity::toDomain)
-//                .toList();
-//    }
+    // --- Constructor
+
+    public TokenRepositoryImpl(TokenJpaRepository tokenJpaRepository) {
+        this.tokenJpaRepository = tokenJpaRepository;
+    }
+
+    // --- Method
 
     @Override
     public void save(Token token) {
@@ -49,21 +44,6 @@ public class TokenRepositoryImpl implements TokenRepository {
     }
 
     @Override
-    public boolean existTokenFor(long queueId, String userUUID) {
-
-        return tokenJpaRepository.findTokenByQueueIdAndUUID(queueId, userUUID)
-                .isPresent();
-    }
-
-//    @Override
-//    public Token findAccessTokenBy(long concertId, String accessToken) {
-//
-//        return tokenJpaRepository.findTokenByConcertIdAndTokenValue(concertId, accessToken)
-//                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.TOKEN_NOT_FOUND.getCode()))
-//                .toDomain();
-//    }
-
-    @Override
     public int findPositionFor(long concertId, String waitingToken) {
         return tokenJpaRepository.findWaitingTokenList(concertId)
                 .indexOf(waitingToken);
@@ -75,7 +55,7 @@ public class TokenRepositoryImpl implements TokenRepository {
     }
 
     @Override
-    public Map<TokenStatus, Integer> getTokenCountsByStatus(long concertId) {
+    public Map<TokenStatus, Long> getTokenCountsByStatus(long concertId) {
 
         return tokenJpaRepository.findTokenStatusCountBy(concertId)
                 .stream()
@@ -83,5 +63,21 @@ public class TokenRepositoryImpl implements TokenRepository {
                         TokenStatusCount::getStatus,
                         TokenStatusCount::getCount
                 ));
+    }
+
+    @Override
+    public List<String> findAccessTokensOrderByCreatedAt(long concertId, long availableCapacity) {
+
+        return tokenJpaRepository.findAllByConcertId(concertId)
+                .stream()
+                .limit(availableCapacity)
+                .toList();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Override
+    public void removeNonValidTokens(Long concertId) {
+        tokenJpaRepository.removeNonValidTokenBy(concertId, TokenStatus.PASSED);
+        tokenJpaRepository.removeNonValidTokenBy(concertId, TokenStatus.WAITING);
     }
 }

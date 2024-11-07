@@ -1,14 +1,14 @@
 package io.hhplus.conbook.domain.token;
 
 import io.hhplus.conbook.domain.concert.Concert;
-import io.hhplus.conbook.domain.token.generation.CustomTokenClaims;
 import io.hhplus.conbook.domain.token.generation.TokenType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-import static io.hhplus.conbook.domain.token.generation.CustomClaims.EXPIRATION_MIN;
+import static io.hhplus.conbook.domain.token.generation.CustomClaims.ACCESS_EXPIRATION_MIN;
+import static io.hhplus.conbook.domain.token.generation.CustomClaims.WAITING_EXPIRATION_MIN;
 
 @AllArgsConstructor
 @Getter
@@ -26,6 +26,8 @@ public class TokenHistory {
         this.tokenType = tokenType;
         issuedAt = LocalDateTime.now();
         if (TokenType.ACCESS.equals(tokenType))
-            expiresAt = LocalDateTime.now().plusMinutes(EXPIRATION_MIN);
+            expiresAt = LocalDateTime.now().plusMinutes(ACCESS_EXPIRATION_MIN);
+        else
+            expiresAt = LocalDateTime.now().plusMinutes(WAITING_EXPIRATION_MIN);
     }
 }

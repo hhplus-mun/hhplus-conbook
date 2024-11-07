@@ -3,11 +3,13 @@ package io.hhplus.conbook.infra.db.concert;
 import io.hhplus.conbook.domain.concert.Concert;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "concert")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class ConcertEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "concert_id")

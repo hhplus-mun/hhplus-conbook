@@ -1,10 +1,8 @@
 package io.hhplus.conbook.config;
 
 import io.hhplus.conbook.domain.booking.BookingService;
-import io.hhplus.conbook.domain.token.Token;
+import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.token.TokenManager;
-import io.hhplus.conbook.domain.token.TokenQueue;
-import io.hhplus.conbook.domain.token.TokenStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.TaskScheduler;
@@ -14,10 +12,6 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -25,6 +19,7 @@ import java.util.stream.Collectors;
 public class ScheduledTaskExecutor {
     private final TokenManager tokenManager;
     private final BookingService bookingService;
+    private final ConcertService concertService;
     private final TaskScheduler taskScheduler;
 
     /**
@@ -38,25 +33,9 @@ public class ScheduledTaskExecutor {
      */
     @Scheduled(fixedDelay = TOKEN_CHECKER_INTERVAL)
     public void updateQueueList() {
-        for (TokenQueue queue : tokenManager.getTokenQueueListWithItems()) {
-            Map<TokenStatus, List<Token>> tokenGroup = queue.getTokens().stream()
-                    .collect(Collectors.groupingBy(Token::getStatus));
-
-            List<Token> waitingItems = tokenGroup.getOrDefault(TokenStatus.WAITING, new ArrayList<>());
-            List<Token> passedItems = tokenGroup.getOrDefault(TokenStatus.PASSED, new ArrayList<>());
-
-            if (passedItems.isEmpty()) continue;
-
-            List<Token> expiredTokens = new ArrayList<>();
-            for (Token passedItem : passedItems) {
-                if (LocalDateTime.now().isAfter(passedItem.getExpiredAt())) {
-                    expiredTokens.add(passedItem);
-                }
-            }
-
-            tokenManager.removeExpiredAccessToken(queue.getConcert().getId(), expiredTokens);
-            int availableAccess = queue.getAccessCapacity() - (passedItems.size() - expiredTokens.size());
-            if (availableAccess > 0) tokenManager.convertToPass(waitingItems, availableAccess);
+        for (Long concertId : concertService.getConcertIds()) {
+            tokenManager.clearNonValidTokens(concertId);
+            tokenManager.convertToPass(concertId);
         }
     }
 

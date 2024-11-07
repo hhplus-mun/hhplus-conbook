@@ -8,9 +8,9 @@ import lombok.ToString;
 @ToString
 public class TokenStatusCount {
     private TokenStatus status;
-    private int count;
+    private long count;
 
-    public TokenStatusCount(TokenStatus status, int count) {
+    public TokenStatusCount(TokenStatus status, long count) {
         this.status = status;
         this.count = count;
     }
