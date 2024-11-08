@@ -10,6 +10,7 @@ import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,6 +31,7 @@ public class ConcertBookingFacade {
      * - 좌석을 미리 안 만들 경우 어떤 식으로 처리할 지는 추후 여유가 있을 때 구현
      *  (좌석의 좌표값(x,y)만 제공될 경우)
      */
+    @CacheEvict(value = "concertSchedules", key = "#serach.concertId")
     public ConcertBookingResult.BookingSeat bookConcertSeat(ConcertBookingCommand.BookingSeat booking) {
         User user = userService.getUserByUUID(booking.userUUID());
         ConcertSchedule concertSchedule = concertService.getConcertSchedule(booking.concertId(), booking.date());

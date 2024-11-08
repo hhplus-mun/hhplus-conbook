@@ -6,6 +6,7 @@ import io.hhplus.conbook.domain.concert.ConcertSchedule;
 import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.concert.Seat;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,8 +16,8 @@ import java.util.List;
 public class ConcertFacade {
     private final ConcertService concertService;
 
+    @Cacheable(value = "concertSchedules", key = "#serach.concertId")
     public List<ConcertResult.Search> availableDates(ConcertCommand.Search search) {
-
         return concertService.getAvailableConcertScheduleList(search.concertId())
                 .stream()
                 .filter(s -> s.getCapacity() > s.getOccupiedCount())
