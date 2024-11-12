@@ -19,7 +19,7 @@ public class ConcertScheduleRepositoryImpl implements ConcertScheduleRepository 
 
     @Override
     public List<ConcertSchedule> findScheduleListBy(long concertId) {
-        return concertScheduleJpaRepository.findAllByConcertId(concertId)
+        return concertScheduleJpaRepository.findAllByConcertIdOrderByConcertDate(concertId)
                 .stream()
                 .map(ConcertScheduleEntity::toDomain)
                 .toList();
@@ -27,7 +27,7 @@ public class ConcertScheduleRepositoryImpl implements ConcertScheduleRepository 
 
     @Override
     public ConcertSchedule findScheduleBy(long concertId, LocalDate date) {
-        return concertScheduleJpaRepository.findByConcertIdAndAndConcertDate(concertId, date)
+        return concertScheduleJpaRepository.findByConcertIdAndConcertDate(concertId, date)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.CONCERT_SCHEDULE_NOT_FOUND.getCode()))
                 .toDomain();
     }

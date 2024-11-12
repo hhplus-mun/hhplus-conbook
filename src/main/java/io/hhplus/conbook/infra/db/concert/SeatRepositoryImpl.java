@@ -17,9 +17,8 @@ public class SeatRepositoryImpl implements SeatRepository {
 
     @Override
     public List<Seat> findAvailableListBy(Long scheduleId) {
-        return seatJpaRepository.findAllByConcertScheduleId(scheduleId)
+        return seatJpaRepository.findAllByConcertScheduleIdAndIsOccupiedFalse(scheduleId)
                 .stream()
-                .filter(s -> !s.isOccupied())
                 .map(SeatEntity::toDomain)
                 .toList();
     }

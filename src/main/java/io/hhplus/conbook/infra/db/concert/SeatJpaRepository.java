@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface SeatJpaRepository extends JpaRepository<SeatEntity, Long> {
     @EntityGraph(attributePaths = {"concertSchedule"})
-    List<SeatEntity> findAllByConcertScheduleId(Long scheduleId);
+    List<SeatEntity> findAllByConcertScheduleIdAndIsOccupiedFalse(Long scheduleId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from SeatEntity s where s.id = :id and s.concertSchedule.id = :scheduleId")
