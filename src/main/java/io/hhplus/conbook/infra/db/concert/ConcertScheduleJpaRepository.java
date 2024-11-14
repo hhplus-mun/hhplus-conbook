@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface ConcertScheduleJpaRepository extends JpaRepository<ConcertScheduleEntity, Long> {
 
     @EntityGraph(attributePaths = {"concert"})
-    List<ConcertScheduleEntity> findAllByConcertId(long concertId);
+    List<ConcertScheduleEntity> findAllByConcertIdOrderByConcertDate(long concertId);
 
-    Optional<ConcertScheduleEntity> findByConcertIdAndAndConcertDate(long concertId, LocalDate date);
+    Optional<ConcertScheduleEntity> findByConcertIdAndConcertDate(long concertId, LocalDate date);
 }

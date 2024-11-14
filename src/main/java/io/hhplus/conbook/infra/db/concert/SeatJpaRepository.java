@@ -11,8 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SeatJpaRepository extends JpaRepository<SeatEntity, Long> {
-    @EntityGraph(attributePaths = {"concertSchedule"})
-    List<SeatEntity> findAllByConcertScheduleId(Long scheduleId);
+    @Query("""
+        SELECT s FROM SeatEntity s
+        WHERE
+            s.concertSchedule.id = :scheduleId
+        AND
+            s.isOccupied = false
+        ORDER BY
+            s.rowName, s.seatNo
+    """)
+    List<SeatEntity> findAvailableSeatListByScheduleId(Long scheduleId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from SeatEntity s where s.id = :id and s.concertSchedule.id = :scheduleId")

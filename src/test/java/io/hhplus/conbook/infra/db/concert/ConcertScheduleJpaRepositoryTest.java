@@ -3,11 +3,11 @@ package io.hhplus.conbook.infra.db.concert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 
-@DataJpaTest
+@SpringBootTest
 class ConcertScheduleJpaRepositoryTest {
     @Autowired
     ConcertScheduleJpaRepository scheduleJpaRepository;
@@ -17,7 +17,7 @@ class ConcertScheduleJpaRepositoryTest {
     void schedules() {
         long givenId = 1L;
 
-        scheduleJpaRepository.findAllByConcertId(givenId);
+        scheduleJpaRepository.findAllByConcertIdOrderByConcertDate(givenId);
     }
     
     @Test
@@ -26,6 +26,6 @@ class ConcertScheduleJpaRepositoryTest {
         long givenId = 1;
         LocalDate date = LocalDate.now();
 
-        scheduleJpaRepository.findByConcertIdAndAndConcertDate(givenId, date);
+        scheduleJpaRepository.findByConcertIdAndConcertDate(givenId, date);
     }
 }
