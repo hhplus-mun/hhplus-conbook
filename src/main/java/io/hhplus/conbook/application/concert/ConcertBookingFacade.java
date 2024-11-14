@@ -2,16 +2,18 @@ package io.hhplus.conbook.application.concert;
 
 import io.hhplus.conbook.application.concert.dto.ConcertBookingCommand;
 import io.hhplus.conbook.application.concert.dto.ConcertBookingResult;
-import io.hhplus.conbook.config.ScheduledTaskExecutor;
+import io.hhplus.conbook.application.event.ConcertBookingEventPublisher;
 import io.hhplus.conbook.domain.booking.Booking;
 import io.hhplus.conbook.domain.booking.BookingService;
 import io.hhplus.conbook.domain.concert.ConcertSchedule;
 import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.domain.user.UserService;
+import io.hhplus.conbook.interfaces.schedule.booking.BookingScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +26,8 @@ public class ConcertBookingFacade {
     private final UserService userService;
     private final ConcertService concertService;
     private final BookingService bookingService;
-    private final ScheduledTaskExecutor scheduledTaskExecutor;
+    private final BookingScheduler bookingScheduler;
+    private final ConcertBookingEventPublisher concertBookingEventPublisher;
 
     /**
      * 각 공연은 모두 좌석을 생성한다고 가정.
@@ -32,13 +35,16 @@ public class ConcertBookingFacade {
      *  (좌석의 좌표값(x,y)만 제공될 경우)
      */
     @CacheEvict(value = "concertSchedules", key = "#serach.concertId")
+    @Transactional
     public ConcertBookingResult.BookingSeat bookConcertSeat(ConcertBookingCommand.BookingSeat booking) {
         User user = userService.getUserByUUID(booking.userUUID());
         ConcertSchedule concertSchedule = concertService.getConcertSchedule(booking.concertId(), booking.date());
 
         Booking bookingResult = bookingService.createBooking(concertSchedule, booking.seatId(), user);
-        scheduledTaskExecutor.addSchedule(bookingResult.getId(), DEFAULT_BOOKING_STAGING_MIN);
-        concertService.updateSeatStatus(booking.concertId(), booking.date());
+        bookingScheduler.addSchedule(bookingResult.getId(), DEFAULT_BOOKING_STAGING_MIN);
+        concertService.updateScheduleStatus(booking.concertId(), booking.date());
+
+        concertBookingEventPublisher.publishEventOn(bookingResult);
 
         return ConcertBookingResult.BookingSeat.builder()
                 .bookingId(bookingResult.getId())

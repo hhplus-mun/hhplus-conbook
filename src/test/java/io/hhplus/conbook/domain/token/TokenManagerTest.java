@@ -1,11 +1,11 @@
 package io.hhplus.conbook.domain.token;
 
-import io.hhplus.conbook.config.ScheduledTaskExecutor;
 import io.hhplus.conbook.domain.concert.Concert;
 import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.token.generation.TokenType;
 import io.hhplus.conbook.domain.user.User;
 import io.hhplus.conbook.domain.user.UserService;
+import io.hhplus.conbook.interfaces.schedule.token.TokenScheduler;
 import io.hhplus.conbook.performance.token.infra.db.TokenJpaRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class TokenManagerTest {
@@ -34,7 +32,7 @@ class TokenManagerTest {
     TokenJpaRepository tokenJpaRepository;
 
     @Autowired
-    ScheduledTaskExecutor scheduledTaskExecutor;
+    TokenScheduler tokenScheduler;
 
     @BeforeEach
     void init() {
@@ -143,7 +141,7 @@ class TokenManagerTest {
 //        ReflectionTestUtils.setField(queue, "accessCapacity", 2);
 //        tokenQueueJpaRepository.save(queue);
 //
-//        scheduledTaskExecutor.updateQueueList();
+//        tokenScheduler.updateQueueList();
 //
 //        //when
 //        TokenStatusInfo waitingInfo = tokenManager.getWaitingStatusInfo(token.jwt());
