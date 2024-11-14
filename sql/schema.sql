@@ -91,6 +91,17 @@ create table token
     primary key (id)
 );
 
+create table notification_log
+(
+    id            bigint    not null auto_increment,
+    booking_id    bigint,
+    finished_at    datetime(6),
+    primary key (id)
+) engine=InnoDB;
+
+alter table if exists notification_log
+    add constraint UKnotificationid unique (id);
+
 alter table if exists payment
     add constraint UKku02qy6369hn9uhy3n7jk9v6e unique (booking_id);
 
