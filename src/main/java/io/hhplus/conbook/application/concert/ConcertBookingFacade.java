@@ -2,6 +2,7 @@ package io.hhplus.conbook.application.concert;
 
 import io.hhplus.conbook.application.concert.dto.ConcertBookingCommand;
 import io.hhplus.conbook.application.concert.dto.ConcertBookingResult;
+import io.hhplus.conbook.application.event.ConcertBookingEventPublisher;
 import io.hhplus.conbook.domain.booking.Booking;
 import io.hhplus.conbook.domain.booking.BookingService;
 import io.hhplus.conbook.domain.concert.ConcertSchedule;
@@ -26,6 +27,7 @@ public class ConcertBookingFacade {
     private final ConcertService concertService;
     private final BookingService bookingService;
     private final BookingScheduler bookingScheduler;
+    private final ConcertBookingEventPublisher concertBookingEventPublisher;
 
     /**
      * 각 공연은 모두 좌석을 생성한다고 가정.
@@ -41,6 +43,8 @@ public class ConcertBookingFacade {
         Booking bookingResult = bookingService.createBooking(concertSchedule, booking.seatId(), user);
         bookingScheduler.addSchedule(bookingResult.getId(), DEFAULT_BOOKING_STAGING_MIN);
         concertService.updateSeatStatus(booking.concertId(), booking.date());
+
+        concertBookingEventPublisher.publishEventOn(bookingResult);
 
         return ConcertBookingResult.BookingSeat.builder()
                 .bookingId(bookingResult.getId())
