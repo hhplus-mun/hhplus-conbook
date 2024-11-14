@@ -42,7 +42,7 @@ public class ConcertBookingFacade {
 
         Booking bookingResult = bookingService.createBooking(concertSchedule, booking.seatId(), user);
         bookingScheduler.addSchedule(bookingResult.getId(), DEFAULT_BOOKING_STAGING_MIN);
-        concertService.updateSeatStatus(booking.concertId(), booking.date());
+        concertService.updateScheduleStatus(booking.concertId(), booking.date());
 
         concertBookingEventPublisher.publishEventOn(bookingResult);
 
