@@ -15,6 +15,23 @@ spring:
         show_sql: true
         format_sql: true
     database-platform: org.hibernate.dialect.MariaDBDialect
+
+  kafka:
+    consumer:
+      group-id: conbook.concert-booking.notification
+      auto-offset-reset: earliest
+      bootstrap-servers: localhost:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+kafka:
+  topic:
+    concert: concert-booking.created
+
 springdoc:
   swagger-ui:
     tags-sorter: alpha
