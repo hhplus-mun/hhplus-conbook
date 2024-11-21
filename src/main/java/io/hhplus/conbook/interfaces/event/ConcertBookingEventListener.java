@@ -5,6 +5,7 @@ import io.hhplus.conbook.application.client.ClientFacade;
 import io.hhplus.conbook.application.client.ClientLogCommand;
 import io.hhplus.conbook.application.client.ClientLogFacade;
 import io.hhplus.conbook.application.event.ConcertBookingEvent;
+import io.hhplus.conbook.interfaces.schedule.booking.BookingScheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -21,6 +22,7 @@ public class ConcertBookingEventListener {
 
     private final ClientFacade clientFacade;
     private final ClientLogFacade clientLogFacade;
+    private final BookingScheduler bookingScheduler;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -42,5 +44,13 @@ public class ConcertBookingEventListener {
 
         clientFacade.notifyBookingHistory(command);
         clientLogFacade.saveNotificationHistory(new ClientLogCommand.Save(event.getBooking().getId(), LocalDateTime.now()));
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void handleForSchedule(ConcertBookingEvent event) {
+        log.info("[SCHEDULE] HANDLE - {}", event);
+
+        int DEFAULT_BOOKING_STAGING_MIN = 5;
+        bookingScheduler.addSchedule(event.getBooking().getId(), DEFAULT_BOOKING_STAGING_MIN);
     }
 }
