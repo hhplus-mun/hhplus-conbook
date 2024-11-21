@@ -30,4 +30,8 @@ public class OutboxEvent {
     public void changeStatus(OutboxStatus status) {
         this.status = status;
     }
+
+    public void tryAgain() {
+        retryCount++;
+    }
 }

@@ -16,21 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OutboxEventStore {
-    private final ObjectMapper mapper = new ObjectMapper();
 
     private OutboxRepository outboxRepository;
     /**
      * saveOrUpdate (merge)
      */
     @Transactional
-    public void save(ConcertBookingEvent event) {
-        String payload = "";
-        try {
-            payload = mapper.writeValueAsString(event);
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-        }
-        outboxRepository.save(new OutboxEvent(event.getBookingId(), KafkaConfig.TOPIC_CONCERT, payload));
+    public void save(OutboxEvent event) {
+        outboxRepository.save(event);
     }
 
     public List<OutboxEvent> findFailedList() {
@@ -42,6 +35,8 @@ public class OutboxEventStore {
         OutboxEvent event = outboxRepository.getByAggregateId(aggregateId);
 
         event.changeStatus(status);
+        if (status.equals(OutboxStatus.FAILED)) event.tryAgain();
+
         outboxRepository.save(event);
     }
 }

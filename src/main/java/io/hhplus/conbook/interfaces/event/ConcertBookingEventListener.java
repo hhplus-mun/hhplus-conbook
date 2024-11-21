@@ -1,10 +1,14 @@
 package io.hhplus.conbook.interfaces.event;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.conbook.application.event.ConcertBookingEvent;
+import io.hhplus.conbook.config.KafkaConfig;
+import io.hhplus.conbook.domain.outbox.OutboxEvent;
 import io.hhplus.conbook.domain.outbox.OutboxEventStore;
 import io.hhplus.conbook.domain.outbox.OutboxStatus;
 import io.hhplus.conbook.infra.kafka.producer.KafkaConcertBookingProducer;
 import io.hhplus.conbook.interfaces.schedule.booking.BookingScheduler;
+import io.hhplus.conbook.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -16,6 +20,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class ConcertBookingEventListener {
+    private final ObjectMapper mapper = new ObjectMapper();
 
     private final BookingScheduler bookingScheduler;
     private final OutboxEventStore outboxEventStore;
@@ -34,7 +39,9 @@ public class ConcertBookingEventListener {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleForOutbox(ConcertBookingEvent event) {
         log.info("[OUTBOX] HANDLE - {}", event);
-        outboxEventStore.save(event);
+        String payload = JsonUtil.toJson(event);
+
+        outboxEventStore.save(new OutboxEvent(event.getBookingId(), KafkaConfig.TOPIC_CONCERT, payload));
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -42,7 +49,9 @@ public class ConcertBookingEventListener {
         log.info("[MESSAGING] HANDLE - {}", event);
 
         try {
-            kafkaConcertBookingProducer.send(event);
+            String message = JsonUtil.toJson(event);
+
+            kafkaConcertBookingProducer.send(message);
             outboxEventStore.updateAs(event.getBookingId(), OutboxStatus.PUBLISHED);
         } catch (Exception e) {
             outboxEventStore.updateAs(event.getBookingId(), OutboxStatus.FAILED);
