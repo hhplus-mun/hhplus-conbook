@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class OutboxEventEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    private long aggregateId;
 
     /** topic */
     private String eventType;
@@ -33,6 +35,7 @@ public class OutboxEventEntity {
     public OutboxEvent toDomain() {
         return OutboxEvent.builder()
                 .id(id)
+                .aggregateId(aggregateId)
                 .eventType(eventType)
                 .payload(payload)
                 .status(status)
@@ -43,6 +46,7 @@ public class OutboxEventEntity {
 
     public OutboxEventEntity(OutboxEvent event) {
         this.id = event.getId();
+        this.aggregateId = event.getAggregateId();
         this.eventType = event.getEventType();
         this.payload = event.getPayload();
         this.status = event.getStatus();

@@ -101,14 +101,15 @@ create table notification_log
 
 create table outbox_event
 (
-    retry_count integer not null,
-    created_at  datetime(6),
-    id          bigint  not null auto_increment,
-    event_type  varchar(255),
-    payload     TEXT,
-    status      enum ('CREATED','FAILED','PUBLISHED'),
+    retry_count  integer not null,
+    created_at   datetime(6),
+    id           bigint  not null auto_increment,
+    aggregate_id bigint  not null,
+    event_type   varchar(255),
+    payload      TEXT,
+    status       enum ('CREATED','FAILED','PUBLISHED'),
     primary key (id)
-) engine=InnoDB;
+) engine = InnoDB;
 
 alter table if exists notification_log
     add constraint UKnotificationid unique (id);

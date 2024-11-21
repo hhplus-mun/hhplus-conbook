@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class OutboxEvent {
     private long id;
+    private long aggregateId;
     /** topic */
     private String eventType;
     private String payload;
@@ -19,7 +20,8 @@ public class OutboxEvent {
     private LocalDateTime createdAt;
     private int retryCount;
 
-    public OutboxEvent(String eventType, String payload) {
+    public OutboxEvent(long aggregateId, String eventType, String payload) {
+        this.aggregateId = aggregateId;
         this.eventType = eventType;
         this.payload = payload;
         status = OutboxStatus.CREATED;
