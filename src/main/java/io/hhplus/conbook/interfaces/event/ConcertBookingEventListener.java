@@ -21,8 +21,6 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class ConcertBookingEventListener {
-    private final ObjectMapper mapper = new ObjectMapper();
-
     private final BookingScheduler bookingScheduler;
     private final OutboxEventStore outboxEventStore;
     private final KafkaConcertBookingProducer kafkaConcertBookingProducer;

@@ -21,7 +21,7 @@ public class ConcertBookingEvent {
     private int seatNo;
     private Long userId;
     private String userName;
-    private LocalDateTime bookingDateTim;
+    private LocalDateTime bookingDateTime;
 
     public ConcertBookingEvent(Booking b) {
         this.bookingId = b.getId();
@@ -33,6 +33,6 @@ public class ConcertBookingEvent {
         this.seatNo = b.getSeat().getSeatNo();
         this.userId = b.getUser().getId();
         this.userName = b.getUser().getName();
-        this.bookingDateTim = b.getCreatedAt();
+        this.bookingDateTime = b.getCreatedAt();
     }
 }
