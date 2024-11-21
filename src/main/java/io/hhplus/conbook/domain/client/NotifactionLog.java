@@ -10,4 +10,9 @@ import java.time.LocalDateTime;
 public class NotifactionLog {
     private Long bookingId;
     private LocalDateTime finishedAt;
+    private LocalDateTime paidAt;
+
+    public void switchToPaid() {
+        paidAt = LocalDateTime.now();
+    }
 }

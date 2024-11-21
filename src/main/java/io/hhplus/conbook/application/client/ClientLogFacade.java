@@ -11,6 +11,6 @@ public class ClientLogFacade {
     private final ClientLogService clientLogService;
 
     public void saveNotificationHistory(ClientLogCommand.Save command) {
-        clientLogService.saveHistory(new NotifactionLog(command.bookingId(), command.finishedAt()));
+        clientLogService.saveHistory(new NotifactionLog(command.bookingId(), command.finishedAt(), null));
     }
 }

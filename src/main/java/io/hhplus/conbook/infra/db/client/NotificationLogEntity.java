@@ -17,13 +17,15 @@ public class NotificationLogEntity {
     private Long id;
     private Long bookingId;
     private LocalDateTime finishedAt;
+    private LocalDateTime paidAt;
 
     public NotificationLogEntity(NotifactionLog log) {
         this.bookingId = log.getBookingId();
         this.finishedAt = log.getFinishedAt();
+        this.paidAt = log.getPaidAt();
     }
 
     public NotifactionLog toDomain() {
-        return new NotifactionLog(bookingId, finishedAt);
+        return new NotifactionLog(bookingId, finishedAt, paidAt);
     }
 }

@@ -1,5 +1,6 @@
 package io.hhplus.conbook.application.booking;
 
+import io.hhplus.conbook.application.event.BookingPaymentEventPublisher;
 import io.hhplus.conbook.domain.booking.Booking;
 import io.hhplus.conbook.domain.booking.BookingService;
 import io.hhplus.conbook.domain.payment.Payment;
@@ -20,6 +21,7 @@ public class BookingPaymentFacade {
     private final PointService pointService;
     private final PaymentService paymentService;
     private final TokenManager tokenManager;
+    private final BookingPaymentEventPublisher bookingPaymentEventPublisher;
 
     /*
      * 예약건에 대한 결제 메서드
@@ -36,6 +38,8 @@ public class BookingPaymentFacade {
 
         Payment payment = paymentService.savePaymentHistory(booking, user);
         tokenManager.expireAccessRight(paid.concertId(), paid.jwt());
+
+        bookingPaymentEventPublisher.publishEventOn(payment);
 
         return new BookingPaymentResult.Paid(booking.getId(), payment.getAmount(), payment.getPaidAt());
     }
