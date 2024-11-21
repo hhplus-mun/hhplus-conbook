@@ -1,6 +1,6 @@
 package io.hhplus.conbook.application.client;
 
-import io.hhplus.conbook.domain.booking.Booking;
+import io.hhplus.conbook.application.event.ConcertBookingEvent;
 import io.hhplus.conbook.domain.client.BookingHistory;
 
 import java.time.LocalDate;
@@ -19,18 +19,18 @@ public class ClientCommand {
             String userName,
             LocalDateTime bookingDateTime
     ) {
-        public Notify(Booking booking) {
+        public Notify(ConcertBookingEvent event) {
             this(
-                booking.getId(),
-                booking.getSeat().getConcertSchedule().getConcert().getId(),
-                booking.getSeat().getConcertSchedule().getConcert().getTitle(),
-                booking.getSeat().getConcertSchedule().getConcertDate(),
-                booking.getSeat().getId(),
-                booking.getSeat().getRowName(),
-                booking.getSeat().getSeatNo(),
-                booking.getUser().getId(),
-                booking.getUser().getName(),
-                booking.getCreatedAt()
+                event.getBookingId(),
+                event.getConcertId(),
+                event.getTitle(),
+                event.getConcertDate(),
+                event.getSeatId(),
+                event.getSeatRow(),
+                event.getSeatNo(),
+                event.getUserId(),
+                event.getUserName(),
+                event.getBookingDateTim()
             );
         }
 
