@@ -12,6 +12,7 @@ import io.hhplus.conbook.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -44,6 +45,7 @@ public class ConcertBookingEventListener {
         outboxEventStore.save(new OutboxEvent(event.getBookingId(), KafkaConfig.TOPIC_CONCERT, payload));
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleForMessaging(ConcertBookingEvent event) {
         log.info("[MESSAGING] HANDLE - {}", event);

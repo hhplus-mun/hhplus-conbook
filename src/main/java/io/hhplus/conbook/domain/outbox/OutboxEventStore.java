@@ -17,7 +17,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OutboxEventStore {
 
-    private OutboxRepository outboxRepository;
+    private final OutboxRepository outboxRepository;
     /**
      * saveOrUpdate (merge)
      */

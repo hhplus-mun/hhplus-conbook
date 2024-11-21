@@ -14,8 +14,6 @@ public class KafkaConcertBookingProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     public void send(String message) {
         kafkaTemplate.send(KafkaConfig.TOPIC_CONCERT, message);
     }

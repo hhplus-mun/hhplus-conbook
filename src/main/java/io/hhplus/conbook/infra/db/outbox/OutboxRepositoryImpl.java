@@ -1,10 +1,8 @@
-package io.hhplus.conbook.infra.db;
+package io.hhplus.conbook.infra.db.outbox;
 
 import io.hhplus.conbook.domain.outbox.OutboxEvent;
 import io.hhplus.conbook.domain.outbox.OutboxRepository;
 import io.hhplus.conbook.domain.outbox.OutboxStatus;
-import io.hhplus.conbook.infra.db.outbox.OutboxEventEntity;
-import io.hhplus.conbook.infra.db.outbox.OutboxJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
