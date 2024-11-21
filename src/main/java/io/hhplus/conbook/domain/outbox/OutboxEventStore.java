@@ -33,9 +33,7 @@ public class OutboxEventStore {
     @Transactional
     public void updateAs(long aggregateId, OutboxStatus status) {
         OutboxEvent event = outboxRepository.getByAggregateId(aggregateId);
-
         event.changeStatus(status);
-        if (status.equals(OutboxStatus.FAILED)) event.tryAgain();
 
         outboxRepository.save(event);
     }
