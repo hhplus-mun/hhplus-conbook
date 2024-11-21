@@ -1,14 +1,11 @@
 package io.hhplus.conbook.testcontainers.kafka;
 
-import org.springframework.beans.factory.annotation.Value;
+import io.hhplus.conbook.config.KafkaConfig;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaTestProducer {
-
-    @Value("${kafka.topic.concert}")
-    private String concertTopic;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -17,7 +14,7 @@ public class KafkaTestProducer {
     }
 
     public void produce(String message) {
-        kafkaTemplate.send(concertTopic, message);
+        kafkaTemplate.send(KafkaConfig.TOPIC_CONCERT, message);
     }
 
 }

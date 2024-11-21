@@ -7,6 +7,7 @@ import io.hhplus.conbook.application.client.ClientFacade;
 import io.hhplus.conbook.application.client.ClientLogCommand;
 import io.hhplus.conbook.application.client.ClientLogFacade;
 import io.hhplus.conbook.application.event.ConcertBookingEvent;
+import io.hhplus.conbook.config.KafkaConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -24,7 +25,7 @@ public class KafkaConcertBookingConsumer {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @KafkaListener(topics = "${kafka.topic.concert}")
+    @KafkaListener(topics = KafkaConfig.TOPIC_CONCERT)
     public void listen(String message) throws JsonProcessingException {
         log.info("[RECEIVED] message: {}", message);
 
