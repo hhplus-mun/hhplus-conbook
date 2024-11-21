@@ -3,13 +3,12 @@ package io.hhplus.conbook.domain.outbox;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
-@Getter @Setter
+@Getter
 public class OutboxEvent {
     private long id;
     private long aggregateId;
@@ -26,5 +25,9 @@ public class OutboxEvent {
         this.payload = payload;
         status = OutboxStatus.CREATED;
         createdAt = LocalDateTime.now();
+    }
+
+    public void changeStatus(OutboxStatus status) {
+        this.status = status;
     }
 }
