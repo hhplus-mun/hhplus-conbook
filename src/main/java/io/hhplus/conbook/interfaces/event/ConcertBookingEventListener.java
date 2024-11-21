@@ -1,46 +1,62 @@
 package io.hhplus.conbook.interfaces.event;
 
-import io.hhplus.conbook.application.client.ClientCommand;
-import io.hhplus.conbook.application.client.ClientFacade;
-import io.hhplus.conbook.application.client.ClientLogCommand;
-import io.hhplus.conbook.application.client.ClientLogFacade;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.conbook.application.event.ConcertBookingEvent;
+import io.hhplus.conbook.config.KafkaConfig;
+import io.hhplus.conbook.domain.outbox.OutboxEvent;
+import io.hhplus.conbook.domain.outbox.OutboxEventStore;
+import io.hhplus.conbook.domain.outbox.OutboxStatus;
+import io.hhplus.conbook.infra.kafka.producer.KafkaConcertBookingProducer;
+import io.hhplus.conbook.interfaces.schedule.booking.BookingScheduler;
+import io.hhplus.conbook.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ConcertBookingEventListener {
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    private final ClientFacade clientFacade;
-    private final ClientLogFacade clientLogFacade;
+    private final BookingScheduler bookingScheduler;
+    private final OutboxEventStore outboxEventStore;
+    private final KafkaConcertBookingProducer kafkaConcertBookingProducer;
+
+    @Order(1)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void handleForSchedule(ConcertBookingEvent event) {
+        log.info("[SCHEDULE] HANDLE - {}", event);
+
+        int DEFAULT_BOOKING_STAGING_MIN = 5;
+        bookingScheduler.addSchedule(event.getBookingId(), DEFAULT_BOOKING_STAGING_MIN);
+    }
+
+    @Order(2)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void handleForOutbox(ConcertBookingEvent event) {
+        log.info("[OUTBOX] HANDLE - {}", event);
+        String payload = JsonUtil.toJson(event);
+
+        outboxEventStore.save(new OutboxEvent(event.getBookingId(), KafkaConfig.TOPIC_CONCERT, payload));
+    }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleConcertBooking(ConcertBookingEvent event) {
-        log.info("HANDLE - {}", event);
+    public void handleForMessaging(ConcertBookingEvent event) {
+        log.info("[MESSAGING] HANDLE - {}", event);
 
-        ClientCommand.Notify command = ClientCommand.Notify.builder()
-                .bookingId(event.getBooking().getId())
-                .concertId(event.getBooking().getSeat().getConcertSchedule().getConcert().getId())
-                .title(event.getBooking().getSeat().getConcertSchedule().getConcert().getTitle())
-                .concertDate(event.getBooking().getSeat().getConcertSchedule().getConcertDate())
-                .seatId(event.getBooking().getSeat().getId())
-                .seatRow(event.getBooking().getSeat().getRowName())
-                .seatNo(event.getBooking().getSeat().getSeatNo())
-                .userId(event.getBooking().getUser().getId())
-                .userName(event.getBooking().getUser().getName())
-                .bookingDateTime(event.getBooking().getCreatedAt())
-                .build();
+        try {
+            String message = JsonUtil.toJson(event);
 
-        clientFacade.notifyBookingHistory(command);
-        clientLogFacade.saveNotificationHistory(new ClientLogCommand.Save(event.getBooking().getId(), LocalDateTime.now()));
+            kafkaConcertBookingProducer.send(message);
+            outboxEventStore.updateAs(event.getBookingId(), OutboxStatus.PUBLISHED);
+        } catch (Exception e) {
+            outboxEventStore.updateAs(event.getBookingId(), OutboxStatus.FAILED);
+        }
     }
 }

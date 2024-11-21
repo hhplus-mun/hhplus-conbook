@@ -28,10 +28,6 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
-kafka:
-  topic:
-    concert: concert-booking.created
-
 springdoc:
   swagger-ui:
     tags-sorter: alpha

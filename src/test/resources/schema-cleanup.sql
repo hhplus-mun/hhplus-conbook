@@ -8,3 +8,4 @@ drop table if exists user_point
 drop table if exists users
 drop table if exists token
 drop table if exists notification_log
+drop table if exists outbox_event

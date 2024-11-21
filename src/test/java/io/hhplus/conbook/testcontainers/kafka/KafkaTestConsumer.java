@@ -1,5 +1,6 @@
 package io.hhplus.conbook.testcontainers.kafka;
 
+import io.hhplus.conbook.config.KafkaConfig;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ public class KafkaTestConsumer {
         return receivedMessage;
     }
 
-    @KafkaListener(topics = "${kafka.topic.concert}")
+    @KafkaListener(topics = KafkaConfig.TOPIC_CONCERT)
     public void listen(String message) {
         System.out.println("[RECEIVED]: " + message);
         receivedMessage = message;

@@ -1,13 +1,12 @@
 package io.hhplus.conbook.application.client;
 
+import io.hhplus.conbook.application.event.ConcertBookingEvent;
 import io.hhplus.conbook.domain.client.BookingHistory;
-import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class ClientCommand {
-    @Builder
     public record Notify(
             Long bookingId,
             Long concertId,
@@ -20,6 +19,21 @@ public class ClientCommand {
             String userName,
             LocalDateTime bookingDateTime
     ) {
+        public Notify(ConcertBookingEvent event) {
+            this(
+                event.getBookingId(),
+                event.getConcertId(),
+                event.getTitle(),
+                event.getConcertDate(),
+                event.getSeatId(),
+                event.getSeatRow(),
+                event.getSeatNo(),
+                event.getUserId(),
+                event.getUserName(),
+                event.getBookingDateTim()
+            );
+        }
+
         public BookingHistory toBookingHistory() {
             return BookingHistory.builder()
                     .bookingId(bookingId)
