@@ -30,7 +30,7 @@ public class ClientCommand {
                 event.getSeatNo(),
                 event.getUserId(),
                 event.getUserName(),
-                event.getBookingDateTim()
+                event.getBookingDateTime()
             );
         }
 
@@ -49,4 +49,8 @@ public class ClientCommand {
                     .build();
         }
     }
+
+    public record Update(
+            long bookingId
+    ) {}
 }
