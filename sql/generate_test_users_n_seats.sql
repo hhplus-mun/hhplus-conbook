@@ -16,6 +16,23 @@ END WHILE;
 END //
 DELIMITER ;
 
+DELIMITER //
+CREATE PROCEDURE generate_test_user_point()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+
+    WHILE i <= 30000 DO
+            INSERT INTO user_point (point, updated_time, user_id)
+            VALUES (
+                       10000000,
+                       NOW(),
+                    i
+                   );
+            SET i = i + 1;
+        END WHILE;
+END //
+DELIMITER ;
+
 -- Load Test 진행을 위한 테스트 좌석 생성 프로시저
 -- PLAN : 20,000 좌석 (수용인원을 2만명이라 가정)
 DELIMITER //
@@ -71,4 +88,5 @@ CALL generate_test_seats();
 
 -- 필요 시 생성한 프로시저 제거
 -- DROP PROCEDURE IF EXISTS generate_test_users;
+-- DROP PROCEDURE IF EXISTS generate_test_user_point;
 -- DROP PROCEDURE IF EXISTS generate_test_seats;
