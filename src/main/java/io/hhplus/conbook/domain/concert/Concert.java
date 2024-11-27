@@ -10,10 +10,12 @@ public class Concert {
     private String title;
     private String artist;
     private String place;
+    private int capacity;
 
-    public Concert(String title, String artist, String place) {
+    public Concert(String title, String artist, String place, int capacity) {
         this.title = title;
         this.artist = artist;
         this.place = place;
+        this.capacity = capacity;
     }
 }

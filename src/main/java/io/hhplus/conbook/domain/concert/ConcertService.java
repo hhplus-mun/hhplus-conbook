@@ -30,7 +30,7 @@ public class ConcertService {
     public List<ConcertSchedule> getAvailableConcertScheduleList(long concertId) {
         return scheduleRepository.findScheduleListBy(concertId)
                 .stream()
-                .filter(s -> s.getCapacity() > s.getOccupiedCount())
+                .filter(s -> s.getConcert().getCapacity() > s.getOccupiedCount())
                 .toList();
     }
 

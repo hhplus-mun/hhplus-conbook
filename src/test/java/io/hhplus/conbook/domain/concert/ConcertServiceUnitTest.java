@@ -34,13 +34,13 @@ class ConcertServiceUnitTest {
     void availableSeats() {
         // given
         List<ConcertSchedule> schedules = Arrays.asList(
-                new ConcertSchedule(1L, null, LocalDate.now(), 1, 5),
-                new ConcertSchedule(1L, null, LocalDate.now(), 2, 5),
-                new ConcertSchedule(1L, null, LocalDate.now(), 3, 5),
-                new ConcertSchedule(1L, null, LocalDate.now(), 4, 5),
-                new ConcertSchedule(1L, null, LocalDate.now(), 5, 5),
-                new ConcertSchedule(1L, null, LocalDate.now(), 6, 5),
-                new ConcertSchedule(1L, null, LocalDate.now(), 7, 5)
+                new ConcertSchedule(1L, null, LocalDate.now(), 1),
+                new ConcertSchedule(1L, null, LocalDate.now(), 2),
+                new ConcertSchedule(1L, null, LocalDate.now(), 3),
+                new ConcertSchedule(1L, null, LocalDate.now(), 4),
+                new ConcertSchedule(1L, null, LocalDate.now(), 5),
+                new ConcertSchedule(1L, null, LocalDate.now(), 6),
+                new ConcertSchedule(1L, null, LocalDate.now(), 7)
         );
         BDDMockito.given(scheduleRepository.findScheduleListBy(1L))
                 .willReturn(schedules);

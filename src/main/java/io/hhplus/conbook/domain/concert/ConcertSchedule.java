@@ -12,7 +12,6 @@ public class ConcertSchedule {
     private Concert concert;
     private LocalDate concertDate;
     private int occupiedCount;
-    private int capacity;
 
     public void audienceIncrease() {
         occupiedCount++;

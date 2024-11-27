@@ -25,7 +25,7 @@ public class ConcertFacade {
                         .title(s.getConcert().getTitle())
                         .date(s.getConcertDate())
                         .soldCount(s.getOccupiedCount())
-                        .capacity(s.getCapacity())
+                        .capacity(s.getConcert().getCapacity())
                         .build()
                 )
                 .toList();
