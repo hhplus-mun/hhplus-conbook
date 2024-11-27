@@ -13,16 +13,16 @@ create table booking
 
 create table concert
 (
-    concert_id bigint not null auto_increment,
+    concert_id bigint  not null auto_increment,
     artist     varchar(255),
     place      varchar(255),
     title      varchar(255),
+    capacity   integer not null,
     primary key (concert_id)
-) engine=InnoDB;
+) engine = InnoDB;
 
 create table concert_schedule
 (
-    capacity            integer not null,
     concert_date        date,
     occupied_count      integer not null,
     concert_id          bigint,

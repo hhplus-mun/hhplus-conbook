@@ -1,16 +1,16 @@
-INSERT INTO concert(concert_id, artist, title, place) VALUES
-    (1, 'buz', 'sorry', 'seoul'),
-    (2, 'position', 'i love you', 'Busan');
+INSERT INTO concert(concert_id, artist, title, place, capacity) VALUES
+    (1, 'buz', 'sorry', 'seoul', 50),
+    (2, 'position', 'i love you', 'Busan', 50);
 
-INSERT INTO concert_schedule(concert_id, concert_date, occupied_count, capacity) VALUES
-     (1, '2024-10-01', 1, 50),
-     (1, '2024-10-02', 0, 50),
-     (1, '2024-10-03', 35, 50),
-     (1, '2024-10-04', 22, 50),
-     (2, '2024-11-13', 14, 50),
-     (2, '2024-11-14', 22, 50),
-     (2, '2024-11-15', 50, 50),
-     (2, '2024-11-16', 43, 50);
+INSERT INTO concert_schedule(concert_id, concert_date, occupied_count) VALUES
+     (1, '2024-10-01', 1),
+     (1, '2024-10-02', 0),
+     (1, '2024-10-03', 35),
+     (1, '2024-10-04', 22),
+     (2, '2024-11-13', 14),
+     (2, '2024-11-14', 22),
+     (2, '2024-11-15', 50),
+     (2, '2024-11-16', 43);
 
 INSERT INTO users(name, uuid) VALUES
     ('admin', 'f47ac10b-58cc-4372-a567-0e02b2c3d479'),
