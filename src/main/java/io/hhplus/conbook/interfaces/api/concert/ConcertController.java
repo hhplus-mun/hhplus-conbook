@@ -69,6 +69,7 @@ public class ConcertController implements ConcertControllerApi {
 
     /**
      * 좌석 예약 요청 API
+     * @param id concertId
      */
     @Override
     @PostMapping("/{id}/booking")
