@@ -1,5 +1,6 @@
 package io.hhplus.conbook.interfaces.schedule.token;
 
+import io.hhplus.conbook.domain.concert.Concert;
 import io.hhplus.conbook.domain.concert.ConcertService;
 import io.hhplus.conbook.domain.token.TokenManager;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,9 @@ public class TokenScheduler {
      */
     @Scheduled(fixedDelay = TOKEN_CHECKER_INTERVAL)
     public void updateQueueList() {
-        for (Long concertId : concertService.getConcertIds()) {
-            tokenManager.clearNonValidTokens(concertId);
-            tokenManager.convertToPass(concertId);
+        for (Concert concert : concertService.getConcertList()) {
+            tokenManager.clearNonValidTokens(concert.getId());
+            tokenManager.convertToPass(concert.getId(), concert.getCapacity());
         }
     }
 }

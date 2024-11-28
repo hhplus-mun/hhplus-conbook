@@ -13,7 +13,7 @@ spring:
     properties:
       hibernate:
         show_sql: true
-        format_sql: true
+#        format_sql: true
     database-platform: org.hibernate.dialect.MariaDBDialect
 
   kafka:
@@ -36,7 +36,9 @@ springdoc:
   api-docs:
     enabled: true
 
-#logging:
+logging:
+  file:
+    name: logs/conbook.log
 #  level:
 #    org.springframework.orm: debug
 #    io.hhplus.conbook: debug

@@ -20,17 +20,14 @@ public class ConcertService {
         return concertRepository.getConcertBy(id);
     }
 
-    public List<Long> getConcertIds() {
-        return concertRepository.getConcertList()
-                .stream()
-                .map(Concert::getId)
-                .toList();
+    public List<Concert> getConcertList() {
+        return concertRepository.getConcertList();
     }
 
     public List<ConcertSchedule> getAvailableConcertScheduleList(long concertId) {
         return scheduleRepository.findScheduleListBy(concertId)
                 .stream()
-                .filter(s -> s.getCapacity() > s.getOccupiedCount())
+                .filter(s -> s.getConcert().getCapacity() > s.getOccupiedCount())
                 .toList();
     }
 

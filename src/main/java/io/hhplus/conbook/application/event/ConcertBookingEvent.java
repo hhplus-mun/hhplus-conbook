@@ -3,12 +3,14 @@ package io.hhplus.conbook.application.event;
 import io.hhplus.conbook.domain.booking.Booking;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @ToString
 public class ConcertBookingEvent {

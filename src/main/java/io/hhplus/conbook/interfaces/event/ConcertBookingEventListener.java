@@ -1,6 +1,5 @@
 package io.hhplus.conbook.interfaces.event;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.conbook.application.event.ConcertBookingEvent;
 import io.hhplus.conbook.config.KafkaConfig;
 import io.hhplus.conbook.domain.outbox.OutboxEvent;

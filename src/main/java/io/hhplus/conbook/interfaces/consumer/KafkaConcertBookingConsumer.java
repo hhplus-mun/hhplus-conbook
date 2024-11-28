@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class KafkaConcertBookingConsumer {
 
-    private ClientFacade clientFacade;
-    private ClientLogFacade clientLogFacade;
+    private final ClientFacade clientFacade;
+    private final ClientLogFacade clientLogFacade;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

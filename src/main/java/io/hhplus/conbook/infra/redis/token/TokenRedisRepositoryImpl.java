@@ -59,8 +59,8 @@ public class TokenRedisRepositoryImpl implements TokenRepository {
     public int findPositionFor(long concertId, String waitingToken) {
         String key = getConcertQueueKey(concertId, TokenStatus.WAITING);
 
-        return redisTemplate.opsForZSet()
-                .rank(key, waitingToken)
+        return Optional.ofNullable(redisTemplate.opsForZSet()
+                .rank(key, waitingToken)).orElse(0L)
                 .intValue();
     }
 

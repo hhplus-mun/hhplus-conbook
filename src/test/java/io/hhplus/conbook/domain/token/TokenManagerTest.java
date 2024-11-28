@@ -61,7 +61,7 @@ class TokenManagerTest {
         System.out.println("---");
 
         // when
-        TokenInfo token = tokenManager.creaateToken(user, concert);
+        TokenInfo token = tokenManager.createToken(user, concert);
 
         assertThat(token.type()).isEqualTo(TokenType.ACCESS);
     }
@@ -74,11 +74,11 @@ class TokenManagerTest {
         long concertId = 1L;
         User user = userService.getUser(userId);
         Concert concert = concertService.getConcert(concertId);
-        tokenManager.creaateToken(user, concert);
+        tokenManager.createToken(user, concert);
         System.out.println("---");
 
         // when & then
-        assertThatThrownBy(() -> tokenManager.creaateToken(user, concert))
+        assertThatThrownBy(() -> tokenManager.createToken(user, concert))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -93,10 +93,10 @@ class TokenManagerTest {
         User user1 = userService.getUser(userId1);
         User user2 = userService.getUser(userId2);
         Concert concert = concertService.getConcert(concertId);
-        tokenManager.creaateToken(user1, concert);
+        tokenManager.createToken(user1, concert);
 
         // when
-        TokenInfo token = tokenManager.creaateToken(user2, concert);
+        TokenInfo token = tokenManager.createToken(user2, concert);
 
         // then
         assertThat(token.type()).isEqualTo(TokenType.WAIT);
@@ -113,8 +113,8 @@ class TokenManagerTest {
         User user1 = userService.getUser(userId1);
         User user2 = userService.getUser(userId2);
         Concert concert = concertService.getConcert(concertId);
-        tokenManager.creaateToken(user1, concert);
-        TokenInfo token = tokenManager.creaateToken(user2, concert);
+        tokenManager.createToken(user1, concert);
+        TokenInfo token = tokenManager.createToken(user2, concert);
 
         //when
         TokenStatusInfo waitingInfo = tokenManager.getWaitingStatusInfo(token.jwt());

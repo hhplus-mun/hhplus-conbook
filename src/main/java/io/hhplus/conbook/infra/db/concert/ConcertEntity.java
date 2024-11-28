@@ -17,9 +17,10 @@ public class ConcertEntity {
     private String title;
     private String artist;
     private String place;
+    private int capacity;
 
     public Concert toDomain() {
-        return new Concert(id, title, artist, place);
+        return new Concert(id, title, artist, place, capacity);
     }
 
     public ConcertEntity(Concert concert) {
@@ -27,5 +28,6 @@ public class ConcertEntity {
         this.title = concert.getTitle();
         this.artist = concert.getArtist();
         this.place = concert.getPlace();
+        this.capacity = concert.getCapacity();
     }
 }

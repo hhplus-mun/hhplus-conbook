@@ -22,17 +22,15 @@ public class ConcertScheduleEntity {
     private LocalDate concertDate;
 
     private int occupiedCount;
-    private int capacity;
 
     public ConcertScheduleEntity(ConcertSchedule concertSchedule) {
         this.id = concertSchedule.getId();
         this.concert = new ConcertEntity(concertSchedule.getConcert());
         this.concertDate = concertSchedule.getConcertDate();
         this.occupiedCount = concertSchedule.getOccupiedCount();
-        this.capacity = concertSchedule.getCapacity();
     }
 
     public ConcertSchedule toDomain() {
-        return new ConcertSchedule(id, concert.toDomain(), concertDate, occupiedCount, capacity);
+        return new ConcertSchedule(id, concert.toDomain(), concertDate, occupiedCount);
     }
 }

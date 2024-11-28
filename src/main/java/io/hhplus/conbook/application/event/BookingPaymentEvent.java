@@ -3,11 +3,13 @@ package io.hhplus.conbook.application.event;
 import io.hhplus.conbook.domain.payment.Payment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @ToString
 public class BookingPaymentEvent {

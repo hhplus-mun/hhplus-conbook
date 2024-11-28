@@ -24,6 +24,7 @@ public class OutboxScheduler {
 
     @Scheduled(fixedDelay = 5000)
     public void sendingMessage() {
+        log.info("[SCHEDULE]: find failed message");
         List<OutboxEvent> failedEvents = outboxEventStore.findFailedList();
 
         if (failedEvents.isEmpty()) return;

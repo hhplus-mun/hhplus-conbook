@@ -34,7 +34,7 @@ public class TokenController implements TokenControllerApi {
      * 사용자 대기열 통과 시 액세스 토큰을 발급
      *
      * @param token - custom HTTP Header 대기열 토큰을 Header에 넣어야 한다.
-     * @return 대기번호 or 액세스 토큰
+     * @return 대기번호
      */
     @Override
     @GetMapping("/check")

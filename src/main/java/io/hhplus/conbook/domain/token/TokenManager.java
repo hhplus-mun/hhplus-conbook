@@ -18,8 +18,6 @@ import java.util.Map;
 @Log4j2
 @Transactional(readOnly = true)
 public class TokenManager {
-    private static final int CONCERT_ACCESS_CAPACITY = 50;
-
     private final TokenRepository tokenRepository;
     private final TokenHistoryRepository tokenHistoryRepository;
     private final TokenProvider tokenProvider;
@@ -29,7 +27,7 @@ public class TokenManager {
      * 구성 정보 (콘서트ID, 사용자 UUID, 대기순서) (잔여시간이 아닌 대기순서를 내려준다)
      */
     @Transactional
-    public TokenInfo creaateToken(User user, Concert concert) {
+    public TokenInfo createToken(User user, Concert concert) {
         // to check history
         if (tokenHistoryRepository.hasValidTokenHisoryFor(concert.getId(), user.getUuid()))
             throw new IllegalStateException(ErrorCode.TOKEN_ALREADY_EXIST.getCode());
@@ -37,7 +35,7 @@ public class TokenManager {
         CustomTokenClaims customTokenClaims = CustomTokenClaims.getDefaultClaims(concert.getId(), user.getUuid());
         Map<TokenStatus, Long> tokenCountsByStatus = tokenRepository.getTokenCountsByStatus(concert.getId());
 
-        if (hasWaitingItems(tokenCountsByStatus)) {
+        if (hasWaitingItems(tokenCountsByStatus, concert.getCapacity())) {
             customTokenClaims.changeType(TokenType.WAIT);
         }
 
@@ -57,8 +55,8 @@ public class TokenManager {
         return new TokenInfo(jwt, customTokenClaims.getType());
     }
 
-    private boolean hasWaitingItems(Map<TokenStatus, Long> statusCounts) {
-        return statusCounts.getOrDefault(TokenStatus.PASSED, 0L) >= TokenManager.CONCERT_ACCESS_CAPACITY;
+    private boolean hasWaitingItems(Map<TokenStatus, Long> statusCounts, int concertCapacity) {
+        return statusCounts.getOrDefault(TokenStatus.PASSED, 0L) >= concertCapacity;
     }
 
     /**
@@ -88,13 +86,13 @@ public class TokenManager {
     }
 
     @Transactional
-    public void convertToPass(long concertId) {
+    public void convertToPass(long concertId, int concertCapacity) {
         Long validAccessTokenCount = tokenRepository.getTokenCountsByStatus(concertId)
                 .getOrDefault(TokenStatus.PASSED, 0L);
 
-        if (validAccessTokenCount >= CONCERT_ACCESS_CAPACITY) return;
+        if (validAccessTokenCount >= concertCapacity) return;
 
-        long availableCapacity = CONCERT_ACCESS_CAPACITY - validAccessTokenCount;
+        long availableCapacity = concertCapacity - validAccessTokenCount;
         List<String> jwts = tokenRepository.findAccessTokensOrderByCreatedAt(concertId, availableCapacity);
         List<Token> convertingTargets = new ArrayList<>();
 
@@ -111,8 +109,8 @@ public class TokenManager {
     }
 
     @Transactional
-    public void expireAccessRight(long concertId, String accessTokoen) {
-        tokenRepository.remove(concertId, accessTokoen);
+    public void expireAccessRight(long concertId, String accessToken) {
+        tokenRepository.remove(concertId, accessToken);
     }
 
     public void clearNonValidTokens(Long concertId) {
