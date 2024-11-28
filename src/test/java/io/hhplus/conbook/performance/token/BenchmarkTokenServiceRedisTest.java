@@ -60,7 +60,7 @@ public class BenchmarkTokenServiceRedisTest {
 
         long start = System.currentTimeMillis();
         // when
-        TokenInfo tokenInfo = tokenManager.creaateToken(user, concert);
+        TokenInfo tokenInfo = tokenManager.createToken(user, concert);
         long end = System.currentTimeMillis();
 
         // then
@@ -85,7 +85,7 @@ public class BenchmarkTokenServiceRedisTest {
         for (User user : users) {
             tasks.add(() -> {
                 try {
-                    tokenManager.creaateToken(user, concert);
+                    tokenManager.createToken(user, concert);
                 } catch (Exception e) {
                 }
             });
@@ -109,7 +109,7 @@ public class BenchmarkTokenServiceRedisTest {
         // given
         User user = userJpaRepository.findById(1L).get().toDomain();
         Concert concert = concertJpaRepository.findById(1L).get().toDomain();
-        TokenInfo tokenInfo = tokenManager.creaateToken(user, concert);
+        TokenInfo tokenInfo = tokenManager.createToken(user, concert);
 
         // when
         long start = System.currentTimeMillis();
@@ -130,7 +130,7 @@ public class BenchmarkTokenServiceRedisTest {
         // given
         Concert concert = concertJpaRepository.findById(1L).get().toDomain();
         User user = userJpaRepository.findById(1L).get().toDomain();
-        TokenInfo tokenInfo = tokenManager.creaateToken(user, concert);
+        TokenInfo tokenInfo = tokenManager.createToken(user, concert);
 
         // 100 명이 요청한다고 가정
         // when

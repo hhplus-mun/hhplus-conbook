@@ -16,7 +16,7 @@ import java.util.List;
 public class ConcertFacade {
     private final ConcertService concertService;
 
-    @Cacheable(value = "concertSchedules", key = "#serach.concertId")
+    @Cacheable(value = "concertSchedules", key = "#search.concertId")
     public List<ConcertResult.Search> availableDates(ConcertCommand.Search search) {
         return concertService.getAvailableConcertScheduleList(search.concertId())
                 .stream()

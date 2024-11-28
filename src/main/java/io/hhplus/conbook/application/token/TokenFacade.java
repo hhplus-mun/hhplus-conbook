@@ -21,7 +21,7 @@ public class TokenFacade {
     public TokenResult.Access getAccessToken(TokenCommand.Access command) {
         User user = userService.getUser(command.userId());
         Concert concert = concertService.getConcert(command.concertId());
-        TokenInfo token = tokenManager.creaateToken(user, concert);
+        TokenInfo token = tokenManager.createToken(user, concert);
 
         return new TokenResult.Access(token.jwt(), token.type());
     }

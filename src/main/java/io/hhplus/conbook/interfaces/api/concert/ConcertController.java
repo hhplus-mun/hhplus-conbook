@@ -9,11 +9,13 @@ import io.hhplus.conbook.application.concert.dto.ConcertResult;
 import io.hhplus.conbook.interfaces.api.ApiRoutes;
 import io.hhplus.conbook.interfaces.filter.CustomAttribute;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
+@Slf4j
 @RestController
 @RequestMapping(ApiRoutes.BASE_CONCERT_API_PATH)
 @RequiredArgsConstructor
@@ -32,6 +34,8 @@ public class ConcertController implements ConcertControllerApi {
     public ConcertResponse.AvailableDates availableDates(
             @PathVariable Long id
     ) {
+        log.info("concertId: {}", id);
+
         List<ConcertResult.Search> searchResults = concertFacade.availableDates(new ConcertCommand.Search(id));
 
         return new ConcertResponse.AvailableDates(
@@ -55,6 +59,8 @@ public class ConcertController implements ConcertControllerApi {
             @PathVariable Long id,
             @RequestParam String date
     ) {
+        log.info("concertId: {}, date: {}", id, date);
+
         ConcertResult.Status seatStatus = concertFacade.availableSeats(new ConcertCommand.Status(id, date));
 
         return new ConcertResponse.AvailableSeats(
@@ -78,6 +84,8 @@ public class ConcertController implements ConcertControllerApi {
             @RequestBody ConcertRequest.Booking req,
             @RequestAttribute(name = CustomAttribute.USER_UUID) String userUUID
     ) {
+        log.info("concertId: {}, date: {}, seatId: {}", id, req.date(), req.seatId());
+
         ConcertBookingResult.BookingSeat result = concertBookingFacade.bookConcertSeat(new ConcertBookingCommand.BookingSeat(id, req.date(), userUUID, req.seatId()));
 
         return new ConcertResponse.Booking(
