@@ -45,12 +45,14 @@ public class CustomTokenClaims implements CustomClaims {
         claimsMap.put(UUID, userUUID);
         claimsMap.put(TOKEN_TYPE, type);
 
-        if (type.equals(TokenType.WAIT)) expiredAt = issuedAt.plusMinutes(WAITING_EXPIRATION_MIN);
+        if (type.equals(TokenType.WAIT)) {
+            expiredAt = issuedAt.plusMinutes(WAITING_EXPIRATION_MIN);
+        }
         else {
             expiredAt = issuedAt.plusMinutes(ACCESS_EXPIRATION_MIN);
-            Date expiration = Date.from(expiredAt.atZone(ZoneId.systemDefault()).toInstant());
-            claimsMap.put(Claims.EXPIRATION, expiration);
         }
+        Date expiration = Date.from(expiredAt.atZone(ZoneId.systemDefault()).toInstant());
+        claimsMap.put(Claims.EXPIRATION, expiration);
 
         return claimsMap;
     }
