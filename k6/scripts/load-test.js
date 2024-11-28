@@ -70,6 +70,7 @@ export default function () {
         const headers = {
             'WaitingToken': jwt
         }
+        console.log(' [HEADERS]: ', headers);
 
         const checkingResponse = http.get(`${BASE_URL}/v1/token/check`, {headers: headers});
         check(checkingResponse, (r) => r.status === 200);
