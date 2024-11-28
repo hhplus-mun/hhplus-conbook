@@ -36,7 +36,9 @@ springdoc:
   api-docs:
     enabled: true
 
-#logging:
+logging:
+  file:
+    name: logs/conbook.log
 #  level:
 #    org.springframework.orm: debug
 #    io.hhplus.conbook: debug
