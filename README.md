@@ -45,4 +45,5 @@
 - [동시성 이슈 분석 및 해결방법](./docs/README_CONCURRENCY.md)
 - [캐싱처리와 적용](./docs/README_CACHE_ANALYSIS.md)
 - [Redis를 활용한 비즈니스 로직 개선 - 대기열](./docs/README_QUEUE_ANALYSIS.md)
+- [K6와 Grafana를 활용한 Load Test 계획 보고서](./docs/README_LOAD_TEST.md)
 <br>
